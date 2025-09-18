@@ -1,9 +1,12 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useProducts } from "../api/hooks/useProducts";
 import type { Product } from "../interfaces/product";
+import Pagination from "../components/Paginations";
 
 function ListingPage() {
-  const params = useMemo(() => ({ page: 1 }), []);
+  const [page, setPage] = useState(1);
+
+  const params = useMemo(() => ({ page: page }), [page]);
   const { data, loading, error } = useProducts(params);
 
   if (loading) return <p>Loading products...</p>;
@@ -49,6 +52,14 @@ function ListingPage() {
           </a>
         ))}
       </div>
+
+      {data?.meta?.last_page !== undefined && data.meta.last_page > 1 && (
+        <Pagination
+          currentPage={page}
+          totalPages={data.meta.last_page}
+          onPageChange={setPage}
+        />
+      )}
     </section>
   );
 }
