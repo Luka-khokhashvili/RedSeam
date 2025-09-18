@@ -12,14 +12,18 @@ function ListingPage() {
   if (loading) return <p>Loading products...</p>;
   if (error) return <p>Failed to load products</p>;
 
+  const products = data?.data ?? [];
+  const meta = data?.meta;
+  const totalPages = meta?.last_page ?? 1;
+
   return (
     <section className="flex flex-col px-[100px] mt-[72px]">
+      {/* Header */}
       <div className="w-full flex justify-between items-center">
         <h1 className="text-[42px] font-semibold">Products</h1>
         <div className="flex items-center gap-[32px]">
           <p className="text-[12px] text-[#3E424A]">
-            Showing {data?.meta.from}-{data?.meta.to} of {data?.meta.total}{" "}
-            results
+            Showing {meta?.from}-{meta?.to} of {meta?.total} results
           </p>
           <div className="h-[14px] border border-[#E1DFE1]"></div>
           <button className="flex items-center text-[16px] gap-[10px] cursor-pointer">
@@ -33,12 +37,13 @@ function ListingPage() {
         </div>
       </div>
 
+      {/* Products Listing */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-[24px] gap-y-[48px] mt-[32px]">
-        {data?.data.map((product: Product) => (
+        {products.map((product: Product) => (
           <a
             href=""
-            className="flex flex-col w-[206px] lg:w-[412px] gap-[12px]"
             key={product.id}
+            className="flex flex-col w-[206px] lg:w-[412px] gap-[12px]"
           >
             <img src={product.cover_image} alt={product.name} />
             <div>
@@ -53,10 +58,10 @@ function ListingPage() {
         ))}
       </div>
 
-      {data?.meta?.last_page !== undefined && data.meta.last_page > 1 && (
+      {totalPages > 1 && (
         <Pagination
           currentPage={page}
-          totalPages={data.meta.last_page}
+          totalPages={totalPages}
           onPageChange={setPage}
         />
       )}
