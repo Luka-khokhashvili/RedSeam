@@ -1,11 +1,14 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useProducts } from "../api/hooks/useProducts";
 import type { Product } from "../interfaces/product";
 import Pagination from "../components/Paginations";
 import FilterBox from "../components/FilterBox";
+import SortBox from "../components/sortBox";
 
 function ListingPage() {
   const [page, setPage] = useState(1);
+
+  const filterRef = useRef<HTMLDivElement | null>(null);
   const [filterOpen, setFilterOpen] = useState(false);
   const [filters, setFilters] = useState<{
     priceFrom: number | undefined;
@@ -15,15 +18,37 @@ function ListingPage() {
     priceTo: undefined,
   });
 
+  const sortRef = useRef<HTMLDivElement | null>(null);
+  const [sortOpen, setSortOpen] = useState(false);
+  const [sort, setSort] = useState("");
+
   const params = useMemo(
     () => ({
       page: page,
       "filter[price_from]": filters.priceFrom,
       "filter[price_to]": filters.priceTo,
+      sort: sort,
     }),
-    [page, filters]
+    [page, filters, sort]
   );
   const { data, loading, error } = useProducts(params);
+
+  // close on outside click
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        filterRef.current &&
+        !filterRef.current.contains(event.target as Node) &&
+        sortRef.current &&
+        !sortRef.current.contains(event.target as Node)
+      ) {
+        setFilterOpen(false);
+        setSortOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   if (loading) return <p>Loading products...</p>;
   if (error) return <p>Failed to load products</p>;
@@ -33,7 +58,17 @@ function ListingPage() {
   const totalPages = meta?.last_page ?? 1;
 
   const openFilterBox = () => {
-    setFilterOpen((prev) => !prev);
+    setFilterOpen((prev) => {
+      if (!prev) setSortOpen(false);
+      return !prev;
+    });
+  };
+
+  const openSort = () => {
+    setSortOpen((prev) => {
+      if (!prev) setFilterOpen(false);
+      return !prev;
+    });
   };
 
   return (
@@ -46,7 +81,7 @@ function ListingPage() {
             Showing {meta?.from}-{meta?.to} of {meta?.total} results
           </p>
           <div className="h-[14px] border border-[#E1DFE1]"></div>
-          <div className="relative">
+          <div className="relative" ref={filterRef}>
             <button
               onClick={openFilterBox}
               className="flex items-center text-[16px] gap-[10px] cursor-pointer"
@@ -56,10 +91,25 @@ function ListingPage() {
             </button>
             {filterOpen && <FilterBox setFilters={setFilters} />}
           </div>
-          <button className="flex items-center text-[16px] gap-[9px] cursor-pointer">
-            Sort by
-            <img className="w-[10px]" src="Arrow.svg" alt="Arrow icon" />
-          </button>
+
+          <div className="relative" ref={sortRef}>
+            <button
+              onClick={openSort}
+              className="flex items-center text-[16px] gap-[9px] cursor-pointer"
+            >
+              Sort by
+              <img
+                className={`w-[10px] ${
+                  sortOpen && "-rotate-180"
+                } transition duration-100`}
+                src="Arrow.svg"
+                alt="Arrow icon"
+              />
+            </button>
+            {sortOpen && (
+              <SortBox setSort={(sortKey: string) => () => setSort(sortKey)} />
+            )}
+          </div>
         </div>
       </div>
 
