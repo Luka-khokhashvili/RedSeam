@@ -29,7 +29,7 @@ function FilterBox({ setFilters }: FilterBoxProps) {
               type="text"
               value={priceFrom}
               onChange={(e) => setPriceFrom(e.target.value)}
-              className="w-full px-[12px] py-[10.5px] border border-gray-300 rounded peer focus:outline-none placeholder-transparent"
+              className="w-full px-[12px] py-[10.5px] border border-[#E1DFE1] focus:border-[#FF4000] rounded peer focus:outline-none placeholder-transparent"
               placeholder="From"
             />
             {!priceFrom && (
@@ -45,7 +45,7 @@ function FilterBox({ setFilters }: FilterBoxProps) {
               type="text"
               value={priceTo}
               onChange={(e) => setPriceTo(e.target.value)}
-              className="w-full px-[12px] py-[10.5px] border border-gray-300 rounded peer focus:outline-none placeholder-transparent"
+              className="w-full px-[12px] py-[10.5px] border border-[#E1DFE1] focus:border-[#FF4000] rounded peer focus:outline-none placeholder-transparent"
               placeholder="To"
             />
             {!priceTo && (
