@@ -7,8 +7,22 @@ import FilterBox from "../components/FilterBox";
 function ListingPage() {
   const [page, setPage] = useState(1);
   const [filterOpen, setFilterOpen] = useState(false);
+  const [filters, setFilters] = useState<{
+    priceFrom: number | undefined;
+    priceTo: number | undefined;
+  }>({
+    priceFrom: undefined,
+    priceTo: undefined,
+  });
 
-  const params = useMemo(() => ({ page: page }), [page]);
+  const params = useMemo(
+    () => ({
+      page: page,
+      "filter[price_from]": filters.priceFrom,
+      "filter[price_to]": filters.priceTo,
+    }),
+    [page, filters]
+  );
   const { data, loading, error } = useProducts(params);
 
   if (loading) return <p>Loading products...</p>;
@@ -40,7 +54,7 @@ function ListingPage() {
               <img className="h-[15px]" src="./Filter.svg" alt="Filters icon" />
               Filter
             </button>
-            {filterOpen && <FilterBox />}
+            {filterOpen && <FilterBox setFilters={setFilters} />}
           </div>
           <button className="flex items-center text-[16px] gap-[9px] cursor-pointer">
             Sort by
