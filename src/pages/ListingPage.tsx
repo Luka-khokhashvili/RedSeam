@@ -2,9 +2,11 @@ import { useMemo, useState } from "react";
 import { useProducts } from "../api/hooks/useProducts";
 import type { Product } from "../interfaces/product";
 import Pagination from "../components/Paginations";
+import FilterBox from "../components/FilterBox";
 
 function ListingPage() {
   const [page, setPage] = useState(1);
+  const [filterOpen, setFilterOpen] = useState(false);
 
   const params = useMemo(() => ({ page: page }), [page]);
   const { data, loading, error } = useProducts(params);
@@ -16,20 +18,30 @@ function ListingPage() {
   const meta = data?.meta;
   const totalPages = meta?.last_page ?? 1;
 
+  const openFilterBox = () => {
+    setFilterOpen((prev) => !prev);
+  };
+
   return (
     <section className="flex flex-col px-[100px] mt-[72px]">
       {/* Header */}
       <div className="w-full flex justify-between items-center">
         <h1 className="text-[42px] font-semibold">Products</h1>
-        <div className="flex items-center gap-[32px]">
+        <div className="relative flex items-center gap-[32px]">
           <p className="text-[12px] text-[#3E424A]">
             Showing {meta?.from}-{meta?.to} of {meta?.total} results
           </p>
           <div className="h-[14px] border border-[#E1DFE1]"></div>
-          <button className="flex items-center text-[16px] gap-[10px] cursor-pointer">
-            <img className="h-[15px]" src="./Filter.svg" alt="Filters icon" />
-            Filter
-          </button>
+          <div className="relative">
+            <button
+              onClick={openFilterBox}
+              className="flex items-center text-[16px] gap-[10px] cursor-pointer"
+            >
+              <img className="h-[15px]" src="./Filter.svg" alt="Filters icon" />
+              Filter
+            </button>
+            {filterOpen && <FilterBox />}
+          </div>
           <button className="flex items-center text-[16px] gap-[9px] cursor-pointer">
             Sort by
             <img className="w-[10px]" src="Arrow.svg" alt="Arrow icon" />
@@ -43,11 +55,11 @@ function ListingPage() {
           <a
             href=""
             key={product.id}
-            className="flex flex-col w-[206px] lg:w-[412px] gap-[12px]"
+            className="flex flex-col w-[206px] lg:w-[412px] gap-[12px] hover:scale-105 transition duration-300"
           >
             <img src={product.cover_image} alt={product.name} />
             <div>
-              <h3 className="text-[18px] text-[#10151F] font-medium">
+              <h3 className="text-[13px] lg:text-18px text-[#10151F] font-medium">
                 {product.name}
               </h3>
               <p className="text-[16px] text-[#10151F] font-medium">
