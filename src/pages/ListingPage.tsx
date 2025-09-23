@@ -3,7 +3,7 @@ import { useProducts } from "../api/hooks/useProducts";
 import type { Product } from "../interfaces/product";
 import Pagination from "../components/Paginations";
 import FilterBox from "../components/FilterBox";
-import SortBox from "../components/sortBox";
+import SortBox from "../components/SortBox";
 
 function ListingPage() {
   const [page, setPage] = useState(1);
@@ -33,7 +33,6 @@ function ListingPage() {
   );
   const { data, loading, error } = useProducts(params);
 
-  // close on outside click
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (
