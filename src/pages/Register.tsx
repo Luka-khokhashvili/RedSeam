@@ -1,4 +1,5 @@
 import React, { useRef, useState } from "react";
+import { registerUser } from "../api/services/registerUser";
 
 function Register() {
   const [formBody, setFormBody] = useState<{
@@ -12,6 +13,13 @@ function Register() {
     password_confirmation: "",
     username: "",
   });
+  const [errors, setErrors] = useState<{
+    username?: string;
+    email?: string;
+    password?: string;
+    password_confirmation?: string;
+  }>({});
+
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
 
@@ -20,6 +28,66 @@ function Register() {
     undefined
   );
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const validateForm = () => {
+    const newErrors: typeof errors = {};
+
+    if (!formBody.username) newErrors.username = "Username is required";
+    else if (formBody.username.length < 3)
+      newErrors.username = "Username must be at least 3 characters";
+
+    if (!formBody.email) newErrors.email = "Email is required";
+    else if (!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(formBody.email))
+      newErrors.email = "Invalid email format";
+
+    if (!formBody.password) newErrors.password = "Password is required";
+    else if (formBody.password.length < 3)
+      newErrors.password = "Password must be at least 3 characters";
+
+    if (!formBody.password_confirmation)
+      newErrors.password_confirmation = "Confirm password is required";
+    else if (formBody.password_confirmation !== formBody.password)
+      newErrors.password_confirmation = "Passwords do not match";
+
+    setErrors(newErrors);
+
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!validateForm()) return;
+
+    try {
+      const data = await registerUser({
+        ...formBody,
+        avatar: avatarPreview || null,
+      });
+      console.log("User registered successfully", data);
+
+      setErrors({});
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      if (error.response?.data?.errors) {
+        const backendErrors = error.response.data.errors;
+        const formattedErrors: typeof errors = {};
+
+        if (backendErrors.username)
+          formattedErrors.username = backendErrors.username[0];
+        if (backendErrors.email) formattedErrors.email = backendErrors.email[0];
+        if (backendErrors.password)
+          formattedErrors.password = backendErrors.password[0];
+        if (backendErrors.password_confirmation)
+          formattedErrors.password_confirmation =
+            backendErrors.password_confirmation[0];
+
+        setErrors(formattedErrors);
+      } else {
+        console.log("Unexpected error:", error);
+      }
+    }
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormBody({ ...formBody, [e.target.name]: e.target.value });
@@ -53,7 +121,7 @@ function Register() {
           <h1 className="text-[42px] text-[#10151F] font-semibold pb-[48px]">
             Registration
           </h1>
-          <form action="" className="flex w-full flex-col">
+          <form onSubmit={handleSubmit} className="flex w-full flex-col">
             <div>
               {avatar ? (
                 <div className="flex items-center gap-[15px] pb-[46px]">
@@ -104,81 +172,119 @@ function Register() {
             </div>
             {/* Main form */}
             <div className="flex flex-col gap-[24px]">
-              <div className="relative w-full">
-                <input
-                  type="text"
-                  name="username"
-                  value={formBody.username}
-                  onChange={handleChange}
-                  className="w-full px-[12px] py-[10.5px] border border-[#E1DFE1] focus:border-[#FF4000] rounded peer focus:outline-none placeholder-transparent"
-                  required
-                />
-                {!formBody.username && (
-                  <span className="absolute left-[12px] top-1/2 -translate-y-1/2 text-[14px] text-[#3E424A] pointer-events-none">
-                    Username <span className="text-[#FF4000]">*</span>
-                  </span>
+              <div className="w-full">
+                <div className="relative w-full">
+                  <input
+                    type="text"
+                    name="username"
+                    value={formBody.username}
+                    onChange={handleChange}
+                    className={`w-full px-[12px] py-[10.5px] border ${
+                      errors.username ? "border-[#FF4000]" : "border-[#E1DFE1]"
+                    } focus:border-[#10151F] rounded peer focus:outline-none placeholder-transparent`}
+                    required
+                  />
+                  {!formBody.username && (
+                    <span className="absolute left-[12px] top-1/2 -translate-y-1/2 text-[14px] text-[#3E424A] pointer-events-none">
+                      Username <span className="text-[#FF4000]">*</span>
+                    </span>
+                  )}
+                </div>
+                {errors.username && (
+                  <p className="text-[#FF4000] text-[10px] font-light mt-1">
+                    {errors.username}
+                  </p>
                 )}
               </div>
-              <div className="relative w-full">
-                <input
-                  type="email"
-                  name="email"
-                  value={formBody.email}
-                  onChange={handleChange}
-                  className="w-full px-[12px] py-[10.5px] border border-[#E1DFE1] focus:border-[#FF4000] rounded peer focus:outline-none placeholder-transparent"
-                  required
-                />
-                {!formBody.email && (
-                  <span className="absolute left-[12px] top-1/2 -translate-y-1/2 text-[14px] text-[#3E424A] pointer-events-none">
-                    Email <span className="text-[#FF4000]">*</span>
-                  </span>
+              <div className="w-full">
+                <div className="relative w-full">
+                  <input
+                    type="email"
+                    name="email"
+                    value={formBody.email}
+                    onChange={handleChange}
+                    className={`w-full px-[12px] py-[10.5px] border ${
+                      errors.email ? "border-[#FF4000]" : "border-[#E1DFE1]"
+                    } focus:border-[#10151F] rounded peer focus:outline-none placeholder-transparent`}
+                    required
+                  />
+                  {!formBody.email && (
+                    <span className="absolute left-[12px] top-1/2 -translate-y-1/2 text-[14px] text-[#3E424A] pointer-events-none">
+                      Email <span className="text-[#FF4000]">*</span>
+                    </span>
+                  )}
+                </div>
+                {errors.email && (
+                  <p className="text-red-500 text-[10px] font-light mt-1">
+                    {errors.email}
+                  </p>
                 )}
               </div>
-              <div className="relative w-full">
-                <input
-                  type={showPassword ? "text" : "password"}
-                  name="password"
-                  value={formBody.password}
-                  onChange={handleChange}
-                  className="w-full px-[12px] py-[10.5px] border border-[#E1DFE1] focus:border-[#FF4000] rounded peer focus:outline-none placeholder-transparent"
-                  required
-                />
-                {!formBody.password && (
-                  <span className="absolute left-[12px] top-1/2 -translate-y-1/2 text-[14px] text-[#3E424A] pointer-events-none">
-                    Password <span className="text-[#FF4000]">*</span>
-                  </span>
+              <div className="w-full">
+                <div className="relative w-full">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    name="password"
+                    value={formBody.password}
+                    onChange={handleChange}
+                    className={`w-full px-[12px] py-[10.5px] border ${
+                      errors.password ? "border-[#FF4000]" : "border-[#E1DFE1]"
+                    } focus:border-[#10151F] rounded peer focus:outline-none placeholder-transparent`}
+                    required
+                  />
+                  {!formBody.password && (
+                    <span className="absolute left-[12px] top-1/2 -translate-y-1/2 text-[14px] text-[#3E424A] pointer-events-none">
+                      Password <span className="text-[#FF4000]">*</span>
+                    </span>
+                  )}
+                  <img
+                    src={!showPassword ? "./Eye.svg" : "./EyeSlash.svg"}
+                    alt="Show password"
+                    onClick={() => {
+                      setShowPassword((prev) => !prev);
+                    }}
+                    className="absolute right-[12px] top-[13.5px] w-[20px] cursor-pointer"
+                  />
+                </div>
+                {errors.password && (
+                  <p className="text-red-500 text-[10px] font-light mt-1">
+                    {errors.password}
+                  </p>
                 )}
-                <img
-                  src={!showPassword ? "./Eye.svg" : "./EyeSlash.svg"}
-                  alt="Show password"
-                  onClick={() => {
-                    setShowPassword((prev) => !prev);
-                  }}
-                  className="absolute right-[12px] top-[13.5px] w-[20px] cursor-pointer"
-                />
               </div>
-              <div className="relative w-full">
-                <input
-                  type={showPasswordConfirm ? "text" : "password"}
-                  name="password_confirmation"
-                  value={formBody.password_confirmation}
-                  onChange={handleChange}
-                  className="w-full px-[12px] py-[10.5px] border border-[#E1DFE1] focus:border-[#FF4000] rounded peer focus:outline-none placeholder-transparent"
-                  required
-                />
-                {!formBody.password_confirmation && (
-                  <span className="absolute left-[12px] top-1/2 -translate-y-1/2 text-[14px] text-[#3E424A] pointer-events-none">
-                    Confirm password <span className="text-[#FF4000]">*</span>
-                  </span>
+              <div className="w-full">
+                <div className="relative w-full">
+                  <input
+                    type={showPasswordConfirm ? "text" : "password"}
+                    name="password_confirmation"
+                    value={formBody.password_confirmation}
+                    onChange={handleChange}
+                    className={`w-full px-[12px] py-[10.5px] border ${
+                      errors.password_confirmation
+                        ? "border-[#FF4000]"
+                        : "border-[#E1DFE1]"
+                    } focus:border-[#10151F] rounded peer focus:outline-none placeholder-transparent`}
+                    required
+                  />
+                  {!formBody.password_confirmation && (
+                    <span className="absolute left-[12px] top-1/2 -translate-y-1/2 text-[14px] text-[#3E424A] pointer-events-none">
+                      Confirm password <span className="text-[#FF4000]">*</span>
+                    </span>
+                  )}
+                  <img
+                    src={!showPasswordConfirm ? "./Eye.svg" : "./EyeSlash.svg"}
+                    alt="Show password"
+                    onClick={() => {
+                      setShowPasswordConfirm((prev) => !prev);
+                    }}
+                    className="absolute right-[12px] top-[13.5px] w-[20px] cursor-pointer"
+                  />
+                </div>
+                {errors.password_confirmation && (
+                  <p className="text-red-500 text-[10px] font-light mt-1">
+                    {errors.password_confirmation}
+                  </p>
                 )}
-                <img
-                  src={!showPasswordConfirm ? "./Eye.svg" : "./EyeSlash.svg"}
-                  alt="Show password"
-                  onClick={() => {
-                    setShowPasswordConfirm((prev) => !prev);
-                  }}
-                  className="absolute right-[12px] top-[13.5px] w-[20px] cursor-pointer"
-                />
               </div>
             </div>
 
