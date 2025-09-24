@@ -1,13 +1,19 @@
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
+import CartSideBar from "./CartSideBar";
 
 function Navbar() {
   const [dropDown, setDropDown] = useState(false);
+  const [showCartBar, setShowCartBar] = useState(false);
 
   const { user, logout } = useAuth();
 
   const openDropDown = () => {
     setDropDown((prev) => !prev);
+  };
+
+  const hanldeCartOpen = () => {
+    setShowCartBar((prev) => !prev);
   };
 
   return (
@@ -23,7 +29,7 @@ function Navbar() {
       <div className="flex items-center gap-4">
         {user ? (
           <div className="flex items-center gap-[20px]">
-            <button className="cursor-pointer">
+            <button onClick={hanldeCartOpen} className="cursor-pointer">
               <img src="./Cart.svg" alt="Cart" />
             </button>
             <div className="relative group">
@@ -66,6 +72,7 @@ function Navbar() {
           </a>
         )}
       </div>
+      {showCartBar && <CartSideBar setShowCartBar={setShowCartBar} />}
     </div>
   );
 }
