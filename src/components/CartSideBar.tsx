@@ -1,10 +1,18 @@
 import { useEffect, useState } from "react";
-import { getCart } from "../api/services/cartService";
+import { getCart, patchCartProduct } from "../api/services/cartService";
 import type { Cart } from "../interfaces/cart";
 
 type CartSideBarProps = {
   setShowCartBar: React.Dispatch<React.SetStateAction<boolean>>;
 };
+
+const calcSubtotal = (products: Cart[]) =>
+  products.reduce(
+    (sum, product) => sum + product.total_price * product.quantity,
+    0
+  );
+
+const delivery = 5;
 
 function CartSideBar({ setShowCartBar }: CartSideBarProps) {
   const [products, setProducts] = useState<Cart[]>([]);
@@ -13,14 +21,29 @@ function CartSideBar({ setShowCartBar }: CartSideBarProps) {
     getCart().then((res) => setProducts(res));
   }, []);
 
-  const subtotal = () => {
-    return products.reduce(
-      (sum, product) => sum + product.total_price * product.quantity,
-      0
-    );
+  const handleQuantityChange = async (product: Cart, newQuantity: number) => {
+    try {
+      // optimistic UI update
+      setProducts((prev) =>
+        prev.map((p) =>
+          p.id === product.id ? { ...p, quantity: newQuantity } : p
+        )
+      );
+
+      await patchCartProduct(product.id, { quantity: newQuantity });
+    } catch (error) {
+      console.error("Failed to update quantity:", error);
+      // rollback if needed
+      setProducts((prev) =>
+        prev.map((p) =>
+          p.id === product.id ? { ...p, quantity: product.quantity } : p
+        )
+      );
+    }
   };
-  const delivery = 5;
-  const total = subtotal() + delivery;
+
+  const subtotal = calcSubtotal(products);
+  const total = subtotal + delivery;
 
   return (
     <>
@@ -62,7 +85,7 @@ function CartSideBar({ setShowCartBar }: CartSideBarProps) {
                     <p className="flex w-full justify-between items-center text-[#10151F] font-medium">
                       <span className="text-[14px]">{product.name}</span>
                       <span className="text-[18px]">
-                        $ {product.total_price}
+                        $ {product.price * product.quantity}
                       </span>
                     </p>
                     <p className="text-[12px] text-[#3E424A]">
@@ -71,9 +94,25 @@ function CartSideBar({ setShowCartBar }: CartSideBarProps) {
                     <p className="text-[12px] text-[#3E424A]">{product.size}</p>
                     <div className="flex w-full justify-between items-center">
                       <div className="flex gap-[9px] py-[4px] px-[10px] border border-[#E1DFE1] rounded-[22px]">
-                        <button className="cursor-pointer">-</button>
-                        <p>{product.quantity}</p>
-                        <button className="cursor-pointer">+</button>
+                        <button
+                          onClick={() =>
+                            product.quantity > 1 &&
+                            handleQuantityChange(product, product.quantity - 1)
+                          }
+                          disabled={product.quantity <= 1}
+                          className="disabled:text-[#E1DFE1] disabled:cursor-not-allowed cursor-pointer"
+                        >
+                          -
+                        </button>
+                        <p className="cursor-default">{product.quantity}</p>
+                        <button
+                          onClick={() =>
+                            handleQuantityChange(product, product.quantity + 1)
+                          }
+                          className="cursor-pointer"
+                        >
+                          +
+                        </button>
                       </div>
                       <button className="text-[12px] text-[#3E424A] cursor-pointer">
                         Remove
@@ -88,7 +127,7 @@ function CartSideBar({ setShowCartBar }: CartSideBarProps) {
           <div className="flex flex-col gap-[16px] mt-4">
             <p className="text-[16px] text-[#3E424A] flex w-full justify-between">
               <span>Items subtotal</span>
-              <span>$ {subtotal()}</span>
+              <span>$ {subtotal}</span>
             </p>
             <p className="text-[16px] text-[#3E424A] flex w-full justify-between">
               <span>Delivery</span>

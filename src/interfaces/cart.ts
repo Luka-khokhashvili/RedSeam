@@ -15,11 +15,11 @@ export interface Cart {
 }
 
 export interface CartPostBody {
-  color: string;
   quantity: number;
+  color: string;
   size: string;
 }
 
 export interface CartPatchBody {
-  quantity: string;
+  quantity: number;
 }

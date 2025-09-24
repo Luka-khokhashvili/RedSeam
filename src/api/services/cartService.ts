@@ -1,8 +1,33 @@
+import type { Cart, CartPatchBody, CartPostBody } from "../../interfaces/cart";
 import api from "../api";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const getCart = async (): Promise<any> => {
+export const getCart = async (): Promise<Cart[]> => {
   const response = await api.get("/cart");
+
+  return response.data;
+};
+
+export const postCartProduct = async (
+  id: number,
+  body: CartPostBody
+): Promise<Cart> => {
+  const response = await api.post(`/cart/products/${id}`, body);
+
+  return response.data;
+};
+
+export const patchCartProduct = async (
+  id: number,
+  body: CartPatchBody
+): Promise<Cart> => {
+  const response = await api.patch(`/cart/products/${id}`, body);
+  console.log(response.status);
+
+  return response.data;
+};
+
+export const deleteCartProduct = async (id: number) => {
+  const response = await api.delete(`/cart/products/${id}`);
 
   return response.data;
 };
