@@ -1,9 +1,9 @@
-import type { RegisterBody, RegisterResponseBody } from "../../interfaces/auth";
+import type { RegisterBody, AuthResponseBody } from "../../interfaces/auth";
 import api from "../api";
 
 export const registerUser = async (
   body: RegisterBody
-): Promise<RegisterResponseBody> => {
+): Promise<AuthResponseBody> => {
   const formData = new FormData();
 
   formData.append("username", body.username);
@@ -14,7 +14,7 @@ export const registerUser = async (
     formData.append("avatar", body.avatar);
   }
 
-  const response = await api.post<RegisterResponseBody>("/register", formData, {
+  const response = await api.post<AuthResponseBody>("/register", formData, {
     headers: {
       Accept: "application/json",
       "Content-Type": "multipart/form-data",

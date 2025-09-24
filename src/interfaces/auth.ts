@@ -6,7 +6,7 @@ export interface RegisterBody {
   username: string;
 }
 
-export interface RegisterResponseBody {
+export interface AuthResponseBody {
   user: {
     email: string;
     name: string;
@@ -14,4 +14,9 @@ export interface RegisterResponseBody {
     id: number;
   };
   token: string;
+}
+
+export interface LoginBody {
+  email: string;
+  password: string;
 }
