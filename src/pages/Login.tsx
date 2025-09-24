@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { loginUser } from "../api/services/loginUser";
+import { useAuth } from "../context/AuthContext";
 
-function Register() {
+function Login() {
   const navigate = useNavigate();
   const [formBody, setFormBody] = useState<{
     email: string;
@@ -17,6 +19,60 @@ function Register() {
 
   const [showPassword, setShowPassword] = useState(false);
 
+  const { login } = useAuth();
+
+  const validateForm = () => {
+    const newErrors: typeof errors = {};
+
+    if (!formBody.email) newErrors.email = "Email is required";
+    else if (!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(formBody.email))
+      newErrors.email = "Invalid email format";
+
+    if (!formBody.password) newErrors.password = "Password is required";
+    else if (formBody.password.length < 3)
+      newErrors.password = "Password must be at least 3 characters";
+
+    setErrors(newErrors);
+
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!validateForm()) return;
+
+    try {
+      const data = await loginUser({ ...formBody });
+      console.log("User Login was successfully", data);
+
+      localStorage.setItem("token", data.token);
+
+      setErrors({});
+
+      login(data.token, {
+        username: data.user.name,
+        avatar: data.user.profile_photo,
+      });
+
+      navigate("/");
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      if (error.response?.data?.errors) {
+        const backendErrors = error.response.data.errors;
+        const formattedErrors: typeof errors = {};
+
+        if (backendErrors.email) formattedErrors.email = backendErrors.email[0];
+        if (backendErrors.password)
+          formattedErrors.password = backendErrors.password[0];
+
+        setErrors(formattedErrors);
+      } else {
+        console.log("Unexpected error:", error);
+      }
+    }
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormBody({ ...formBody, [e.target.name]: e.target.value });
   };
@@ -29,7 +85,7 @@ function Register() {
           <h1 className="text-[42px] text-[#10151F] font-semibold pb-[48px]">
             Log in
           </h1>
-          <form className="flex w-full flex-col">
+          <form onSubmit={handleSubmit} className="flex w-full flex-col">
             <div className="flex flex-col gap-[24px]">
               <div className="w-full">
                 <div className="relative w-full">
@@ -91,15 +147,15 @@ function Register() {
                 type="submit"
                 className="flex w-full justify-center items-center text-[14px] text-white bg-[#FF4000] rounded-[10px] mt-[46px] px-[20px] py-[10px] cursor-pointer"
               >
-                Register
+                Log in
               </button>
             </div>
           </form>
           <div className="flex w-fll pt-[24px] justify-center items-center">
             <p className="text-[14px] text-[#3E424A]">
-              Already member?{" "}
-              <a href="/login" className="text-[#FF4000]">
-                Log in
+              Not a member?{" "}
+              <a href="/register" className="text-[#FF4000]">
+                Register
               </a>
             </p>
           </div>
@@ -109,4 +165,4 @@ function Register() {
   );
 }
 
-export default Register;
+export default Login;
