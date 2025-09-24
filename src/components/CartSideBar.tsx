@@ -97,7 +97,7 @@ function CartSideBar({ setShowCartBar }: CartSideBarProps) {
             }}
             className="cursor-pointer"
           >
-            <img src="./x.svg" alt="Close" />
+            <img src="/x.svg" alt="Close" />
           </button>
         </div>
 
@@ -107,7 +107,7 @@ function CartSideBar({ setShowCartBar }: CartSideBarProps) {
         <div className="min-h-0 flex flex-col">
           {products.length <= 0 ? (
             <div className="flex flex-col w-full pt-[150px] justify-center items-center">
-              <img src="./CartRed.svg" alt="Cart" />
+              <img src="/CartRed.svg" alt="Cart" />
               <h2 className="text-[24px] text-[#10151F] font-semibold mt-[24px]">
                 Ooops!
               </h2>

@@ -22,15 +22,15 @@ function Navbar() {
         user ? "py-[20px]" : "py-[28px]"
       }`}
     >
-      <a href="/" className="flex gap-[7.75px]">
-        <img className="h-[21px]" src="./Logo.svg" alt="ReadSeam Logo" />
+      <a href={"/"} className="flex gap-[7.75px]">
+        <img className="h-[21px]" src="/Logo.svg" alt="ReadSeam Logo" />
         <h3 className="text-[16px] font-semibold">RedSeam Clothing</h3>
       </a>
       <div className="flex items-center gap-4">
         {user ? (
           <div className="flex items-center gap-[20px]">
             <button onClick={hanldeCartOpen} className="cursor-pointer">
-              <img src="./Cart.svg" alt="Cart" />
+              <img src="/Cart.svg" alt="Cart" />
             </button>
             <div className="relative group">
               <button
@@ -38,7 +38,7 @@ function Navbar() {
                 className="flex items-center text-[16px] gap-[9px] cursor-pointer"
               >
                 <img
-                  src={user.avatar || "./User.svg"}
+                  src={user.avatar || "/User.svg"}
                   alt="User Avatar"
                   className="w-[40px] aspect-square rounded-full cursor-pointer"
                 />
@@ -46,7 +46,7 @@ function Navbar() {
                   className={`w-[10px] ${
                     dropDown && "-rotate-180"
                   } transition duration-100`}
-                  src="./Arrow.svg"
+                  src="/Arrow.svg"
                   alt="Arrow icon"
                 />
               </button>
