@@ -28,7 +28,7 @@ export interface CheckoutRequestBody {
   name: string;
   surname: string;
   email: string;
-  zip_code: number;
+  zip_code: string;
   address: string;
 }
 
