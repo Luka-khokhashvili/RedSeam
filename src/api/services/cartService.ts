@@ -1,4 +1,10 @@
-import type { Cart, CartPatchBody, CartPostBody } from "../../interfaces/cart";
+import type {
+  Cart,
+  CartPatchBody,
+  CartPostBody,
+  CheckoutRequestBody,
+  CheckoutResponseBody,
+} from "../../interfaces/cart";
 import api from "../api";
 
 export const getCart = async (): Promise<Cart[]> => {
@@ -28,6 +34,14 @@ export const patchCartProduct = async (
 
 export const deleteCartProduct = async (id: number) => {
   const response = await api.delete(`/cart/products/${id}`);
+
+  return response.data;
+};
+
+export const checkout = async (
+  body: CheckoutRequestBody
+): Promise<CheckoutResponseBody> => {
+  const response = await api.post("/cart/checkout", body);
 
   return response.data;
 };

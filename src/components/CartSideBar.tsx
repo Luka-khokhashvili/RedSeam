@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import {
+  checkout,
   deleteCartProduct,
   getCart,
   patchCartProduct,
 } from "../api/services/cartService";
-import type { Cart } from "../interfaces/cart";
+import type { Cart, CheckoutRequestBody } from "../interfaces/cart";
 
 type CartSideBarProps = {
   setShowCartBar: React.Dispatch<React.SetStateAction<boolean>>;
@@ -51,6 +52,24 @@ function CartSideBar({ setShowCartBar }: CartSideBarProps) {
       setProducts((prev) => prev.filter((p) => p.id !== product.id));
     } catch (error) {
       console.error("Failed to remove product:", error);
+    }
+  };
+
+  const handleCheckout = async () => {
+    const testBody: CheckoutRequestBody = {
+      name: "testname",
+      surname: "testsurname",
+      email: "testemail@gmail.com",
+      zip_code: "1000",
+      address: "testaddress",
+    };
+
+    try {
+      await checkout(testBody);
+
+      setProducts([]);
+    } catch (error) {
+      console.error("Failed to check out:", error);
     }
   };
 
@@ -158,7 +177,10 @@ function CartSideBar({ setShowCartBar }: CartSideBarProps) {
         <div />
 
         <div>
-          <button className="flex w-full justify-center items-center py-[16px] bg-[#FF4000] text-white rounded-[10px] cursor-pointer">
+          <button
+            onClick={() => handleCheckout()}
+            className="flex w-full justify-center items-center py-[16px] bg-[#FF4000] text-white rounded-[10px] cursor-pointer"
+          >
             Go to checkout
           </button>
         </div>

@@ -23,3 +23,15 @@ export interface CartPostBody {
 export interface CartPatchBody {
   quantity: number;
 }
+
+export interface CheckoutRequestBody {
+  name: string;
+  surname: string;
+  email: string;
+  zip_code: number;
+  address: string;
+}
+
+export interface CheckoutResponseBody {
+  message: string;
+}
