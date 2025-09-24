@@ -6,8 +6,17 @@ export interface Product {
   cover_image: string;
   images: string[];
   price: number;
-  available_colors: string[] | null;
-  available_sizes: string[] | null;
+  available_colors: string[];
+  available_sizes: string[];
+  brand: {
+    id: number;
+    name: string;
+    image: string;
+  };
+  total_price: number;
+  quantity: number;
+  color: string;
+  size: string;
 }
 
 export interface PaginationLinks {

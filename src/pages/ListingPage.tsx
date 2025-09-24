@@ -4,6 +4,7 @@ import type { Product } from "../interfaces/product";
 import Pagination from "../components/Paginations";
 import FilterBox from "../components/FilterBox";
 import SortBox from "../components/SortBox";
+import { Link } from "react-router-dom";
 
 function ListingPage() {
   const [page, setPage] = useState(1);
@@ -115,8 +116,8 @@ function ListingPage() {
       {/* Products Listing */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-[24px] gap-y-[48px] mt-[32px]">
         {products.map((product: Product) => (
-          <a
-            href=""
+          <Link
+            to={`/product/${product.id}`}
             key={product.id}
             className="flex flex-col w-[206px] lg:w-[412px] gap-[12px] hover:scale-105 transition duration-300"
           >
@@ -129,7 +130,7 @@ function ListingPage() {
                 $ {product.price}
               </p>
             </div>
-          </a>
+          </Link>
         ))}
       </div>
 
