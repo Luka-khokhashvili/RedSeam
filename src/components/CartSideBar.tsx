@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
-import { getCart, patchCartProduct } from "../api/services/cartService";
+import {
+  deleteCartProduct,
+  getCart,
+  patchCartProduct,
+} from "../api/services/cartService";
 import type { Cart } from "../interfaces/cart";
 
 type CartSideBarProps = {
@@ -23,7 +27,6 @@ function CartSideBar({ setShowCartBar }: CartSideBarProps) {
 
   const handleQuantityChange = async (product: Cart, newQuantity: number) => {
     try {
-      // optimistic UI update
       setProducts((prev) =>
         prev.map((p) =>
           p.id === product.id ? { ...p, quantity: newQuantity } : p
@@ -33,12 +36,21 @@ function CartSideBar({ setShowCartBar }: CartSideBarProps) {
       await patchCartProduct(product.id, { quantity: newQuantity });
     } catch (error) {
       console.error("Failed to update quantity:", error);
-      // rollback if needed
       setProducts((prev) =>
         prev.map((p) =>
           p.id === product.id ? { ...p, quantity: product.quantity } : p
         )
       );
+    }
+  };
+
+  const handleDelete = async (product: Cart) => {
+    try {
+      await deleteCartProduct(product.id);
+
+      setProducts((prev) => prev.filter((p) => p.id !== product.id));
+    } catch (error) {
+      console.error("Failed to remove product:", error);
     }
   };
 
@@ -114,7 +126,10 @@ function CartSideBar({ setShowCartBar }: CartSideBarProps) {
                           +
                         </button>
                       </div>
-                      <button className="text-[12px] text-[#3E424A] cursor-pointer">
+                      <button
+                        onClick={() => handleDelete(product)}
+                        className="text-[12px] text-[#3E424A] cursor-pointer"
+                      >
                         Remove
                       </button>
                     </div>
