@@ -1,7 +1,9 @@
 import React, { useRef, useState } from "react";
 import { registerUser } from "../api/services/registerUser";
+import { useNavigate } from "react-router-dom";
 
 function Register() {
+  const navigate = useNavigate();
   const [formBody, setFormBody] = useState<{
     email: string;
     password: string;
@@ -66,7 +68,11 @@ function Register() {
       });
       console.log("User registered successfully", data);
 
+      localStorage.setItem("token", data.token);
+
       setErrors({});
+
+      navigate("/");
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (error.response?.data?.errors) {
