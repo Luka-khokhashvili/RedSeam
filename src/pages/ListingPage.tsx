@@ -155,7 +155,7 @@ function ListingPage() {
         ))}
       </div>
 
-      {totalPages > 1 && (
+      {totalPages >= 1 && (
         <Pagination
           currentPage={page}
           totalPages={totalPages}
