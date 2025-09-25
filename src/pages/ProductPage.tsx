@@ -30,6 +30,28 @@ function ProductPage() {
           backgroundColor: "white",
           border: "1px solid #ccc",
         };
+      case "navy blue":
+        return {
+          backgroundColor: "#000080",
+        };
+      case "cream":
+        return {
+          backgroundColor: "#FFFDD0",
+        };
+      case "peach":
+        return {
+          backgroundColor: "#FFD3AC",
+        };
+      case "off white":
+        return {
+          backgroundColor: "#FAF9F6",
+          border: "1px solid #ccc",
+        };
+      case "mauve":
+        return {
+          backgroundColor: "#E0B0FF",
+          border: "1px solid #ccc",
+        };
       case "multi":
         return {
           background:
@@ -105,18 +127,31 @@ function ProductPage() {
             <div className="flex flex-col gap-[16px]">
               <p className="text-[16px] text-[#10151F]">Size: {currSize}</p>
               <div className="flex gap-[8px]">
-                {product?.available_sizes.map((size) => (
+                {product?.available_sizes ? (
+                  product?.available_sizes.map((size) => (
+                    <button
+                      className={`flex w-[70px] h-[42px] justify-center items-center border rounded-[10px] cursor-pointer ${
+                        currSize === size
+                          ? "border-[#10151F] bg-[#F8F6F7]"
+                          : "border-[#E1DFE1] bg-transparent"
+                      }`}
+                      onClick={() => setCurrSize(size)}
+                    >
+                      {size}
+                    </button>
+                  ))
+                ) : (
                   <button
                     className={`flex w-[70px] h-[42px] justify-center items-center border rounded-[10px] cursor-pointer ${
-                      currSize === size
+                      currSize === product?.size
                         ? "border-[#10151F] bg-[#F8F6F7]"
                         : "border-[#E1DFE1] bg-transparent"
                     }`}
-                    onClick={() => setCurrSize(size)}
+                    onClick={() => setCurrSize(currSize)}
                   >
-                    {size}
+                    {currSize}
                   </button>
-                ))}
+                )}
               </div>
             </div>
             {/* Quantity */}
