@@ -1,5 +1,5 @@
 // src/context/ListingContext.tsx
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
 interface Filters {
   priceFrom: number | undefined;
@@ -28,6 +28,10 @@ export const ListingProvider = ({
     priceTo: undefined,
   });
   const [sort, setSort] = useState("");
+
+  useEffect(() => {
+    setPage(1);
+  }, [filters]);
 
   return (
     <ListingContext.Provider
