@@ -31,13 +31,12 @@ function ProductPage() {
     }
   };
 
-  const getMainImage = () => {
+  const mainImage = (() => {
     if (!product) return "";
     if (currColor === "Default") return product.cover_image;
-
     const colorIndex = product.available_colors.indexOf(currColor);
     return product.images[colorIndex] || product.cover_image;
-  };
+  })();
 
   const getColorStyle = (color: string): React.CSSProperties => {
     switch (color.toLowerCase()) {
@@ -90,6 +89,10 @@ function ProductPage() {
           <div className="flex flex-col gap-[9px]">
             {product?.images.map((link, index) => (
               <img
+                onClick={() => {
+                  const color = product.available_colors[index] || "Default";
+                  setCurrColor(color);
+                }}
                 key={index}
                 className="w-[121px] h-[161.33px]"
                 src={link}
@@ -100,7 +103,7 @@ function ProductPage() {
           {/* main image */}
           <img
             className="w-[603px] lg:w-[703px] h-[937px] rounded-[10px]"
-            src={getMainImage() || product?.cover_image}
+            src={mainImage}
             alt={product?.name}
           />
         </div>
