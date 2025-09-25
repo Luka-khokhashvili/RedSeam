@@ -5,23 +5,16 @@ import Pagination from "../components/Paginations";
 import FilterBox from "../components/FilterBox";
 import SortBox from "../components/SortBox";
 import { Link } from "react-router-dom";
+import { useListing } from "../context/ListingContext";
 
 function ListingPage() {
-  const [page, setPage] = useState(1);
+  const { page, setPage, filters, setFilters, sort, setSort } = useListing();
 
   const filterRef = useRef<HTMLDivElement | null>(null);
   const [filterOpen, setFilterOpen] = useState(false);
-  const [filters, setFilters] = useState<{
-    priceFrom: number | undefined;
-    priceTo: number | undefined;
-  }>({
-    priceFrom: undefined,
-    priceTo: undefined,
-  });
 
   const sortRef = useRef<HTMLDivElement | null>(null);
   const [sortOpen, setSortOpen] = useState(false);
-  const [sort, setSort] = useState("");
 
   const params = useMemo(
     () => ({
