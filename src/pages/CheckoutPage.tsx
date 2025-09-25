@@ -7,6 +7,7 @@ import {
 } from "../api/services/cartService";
 import type { Cart, CartDeleteBody, CartPatchBody } from "../interfaces/cart";
 import { Link } from "react-router-dom";
+import CheckoutSuccess from "../components/CheckoutSuccess";
 const calcSubtotal = (products: Cart[]) =>
   products.reduce(
     (sum, product) => sum + product.total_price * product.quantity,
@@ -16,6 +17,7 @@ const calcSubtotal = (products: Cart[]) =>
 const delivery = 5;
 
 function CheckoutPage() {
+  const [modalOpen, setModalOpen] = useState(false);
   const [products, setProducts] = useState<Cart[]>([]);
   const email = localStorage.getItem("email");
   const [formBody, setFormBody] = useState<{
@@ -73,6 +75,8 @@ function CheckoutPage() {
     try {
       const data = await checkout({ ...formBody });
       console.log("Checkout was successful!", data);
+
+      setModalOpen(true);
 
       setErrors({});
 
@@ -177,6 +181,7 @@ function CheckoutPage() {
 
   return (
     <div className="flex flex-col w-full mt-[72px] gap-[42px] px-[100px]">
+      {modalOpen && <CheckoutSuccess setModalOpen={setModalOpen} />}
       <h1 className="text-[42px] text-[#10151F] font-semibold">Checkout</h1>
       <div className="flex flex-col lg:flex-row w-full gap-[131px] h-[635px]">
         {/* Form */}
