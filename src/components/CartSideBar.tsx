@@ -1,16 +1,11 @@
 import { useEffect, useState } from "react";
 import {
-  checkout,
   deleteCartProduct,
   getCart,
   patchCartProduct,
 } from "../api/services/cartService";
-import type {
-  Cart,
-  CartDeleteBody,
-  CartPatchBody,
-  CheckoutRequestBody,
-} from "../interfaces/cart";
+import type { Cart, CartDeleteBody, CartPatchBody } from "../interfaces/cart";
+import { Link } from "react-router-dom";
 type CartSideBarProps = {
   setShowCartBar: React.Dispatch<React.SetStateAction<boolean>>;
 };
@@ -91,31 +86,13 @@ function CartSideBar({ setShowCartBar }: CartSideBarProps) {
     }
   };
 
-  const handleCheckout = async () => {
-    const testBody: CheckoutRequestBody = {
-      name: "testname",
-      surname: "testsurname",
-      email: "testemail@gmail.com",
-      zip_code: "1000",
-      address: "testaddress",
-    };
-
-    try {
-      await checkout(testBody);
-
-      setProducts([]);
-    } catch (error) {
-      console.error("Failed to check out:", error);
-    }
-  };
-
   const subtotal = calcSubtotal(products);
   const total = subtotal + delivery;
 
   return (
     <>
       <div
-        className="fixed top-0 left-0 w-screen h-screen bg-[#10151F] opacity-[30%]"
+        className="fixed top-0 left-0 w-screen h-screen bg-[#10151F] opacity-[30%] z-9"
         onClick={() => setShowCartBar(false)}
       ></div>
       <div
@@ -247,12 +224,13 @@ function CartSideBar({ setShowCartBar }: CartSideBarProps) {
 
         <div>
           {products.length > 0 && (
-            <button
-              onClick={() => handleCheckout()}
+            <Link
+              to={"/checkout"}
+              onClick={() => setShowCartBar(false)}
               className="flex w-full justify-center items-center py-[16px] bg-[#FF4000] text-white rounded-[10px] cursor-pointer"
             >
               Go to checkout
-            </button>
+            </Link>
           )}
         </div>
       </div>
