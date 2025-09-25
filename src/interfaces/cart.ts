@@ -22,6 +22,8 @@ export interface CartPostBody {
 
 export interface CartPatchBody {
   quantity: number;
+  color: string;
+  size: string;
 }
 
 export interface CartDeleteBody {

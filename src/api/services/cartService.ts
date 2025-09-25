@@ -28,7 +28,6 @@ export const patchCartProduct = async (
   body: CartPatchBody
 ): Promise<Cart> => {
   const response = await api.patch(`/cart/products/${id}`, body);
-  console.log(response.status);
 
   return response.data;
 };

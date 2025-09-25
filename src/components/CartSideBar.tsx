@@ -8,6 +8,7 @@ import {
 import type {
   Cart,
   CartDeleteBody,
+  CartPatchBody,
   CheckoutRequestBody,
 } from "../interfaces/cart";
 type CartSideBarProps = {
@@ -31,13 +32,23 @@ function CartSideBar({ setShowCartBar }: CartSideBarProps) {
 
   const handleQuantityChange = async (product: Cart, newQuantity: number) => {
     try {
+      const patchBody: CartPatchBody = {
+        quantity: newQuantity,
+        color: product.color,
+        size: product.size,
+      };
+
       setProducts((prev) =>
         prev.map((p) =>
-          p.id === product.id ? { ...p, quantity: newQuantity } : p
+          p.id === product.id &&
+          p.color === product.color &&
+          p.size === product.size
+            ? { ...p, quantity: newQuantity }
+            : p
         )
       );
 
-      await patchCartProduct(product.id, { quantity: newQuantity });
+      await patchCartProduct(product.id, patchBody);
     } catch (error) {
       console.error("Failed to update quantity:", error);
       setProducts((prev) =>
