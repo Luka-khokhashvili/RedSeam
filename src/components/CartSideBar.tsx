@@ -5,8 +5,11 @@ import {
   getCart,
   patchCartProduct,
 } from "../api/services/cartService";
-import type { Cart, CheckoutRequestBody } from "../interfaces/cart";
-
+import type {
+  Cart,
+  CartDeleteBody,
+  CheckoutRequestBody,
+} from "../interfaces/cart";
 type CartSideBarProps = {
   setShowCartBar: React.Dispatch<React.SetStateAction<boolean>>;
 };
@@ -45,11 +48,33 @@ function CartSideBar({ setShowCartBar }: CartSideBarProps) {
     }
   };
 
+  const getImageForColor = (product: Cart) => {
+    if (!product.images || !product?.available_colors)
+      return product.cover_image;
+
+    const colorIndex = product.available_colors.indexOf(product.color);
+    return product.images[colorIndex] || product.cover_image;
+  };
+
   const handleDelete = async (product: Cart) => {
     try {
-      await deleteCartProduct(product.id);
+      const deleteBody: CartDeleteBody = {
+        color: product.color,
+        size: product.size,
+      };
 
-      setProducts((prev) => prev.filter((p) => p.id !== product.id));
+      await deleteCartProduct(product.id, deleteBody);
+
+      setProducts((prev) =>
+        prev.filter(
+          (p) =>
+            !(
+              p.id === product.id &&
+              p.color === product.color &&
+              p.size === product.size
+            )
+        )
+      );
     } catch (error) {
       console.error("Failed to remove product:", error);
     }
@@ -132,7 +157,7 @@ function CartSideBar({ setShowCartBar }: CartSideBarProps) {
                     >
                       <img
                         className="w-[100px] border border-[#E1DFE1] rounded-[10px]"
-                        src={product.cover_image}
+                        src={getImageForColor(product)}
                         alt="Product cover"
                       />
                       <div className="flex w-full flex-col gap-[8px] py-[8.5px]">

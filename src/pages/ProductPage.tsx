@@ -3,6 +3,8 @@ import { useParams } from "react-router-dom";
 import { getProductsById } from "../api/services/productService";
 import type { Product } from "../interfaces/product";
 import QuantityDropdown from "../components/QuantityDropDown";
+import { postCartProduct } from "../api/services/cartService";
+import type { CartPostBody } from "../interfaces/cart";
 
 function ProductPage() {
   const { id } = useParams();
@@ -14,6 +16,20 @@ function ProductPage() {
   useEffect(() => {
     getProductsById(id).then((res) => setProduct(res));
   }, [id]);
+
+  const hanldeAddCart = async () => {
+    try {
+      const productDetails: CartPostBody = {
+        quantity: currQuantity,
+        color: currColor,
+        size: currSize,
+      };
+
+      await postCartProduct(product?.id, productDetails);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const getMainImage = () => {
     if (!product) return "";
@@ -163,7 +179,10 @@ function ProductPage() {
               />
             </div>
             {/* Checkout button */}
-            <button className="flex w-full h-[59px] text-[18px] text-white bg-[#FF4000] font-medium justify-center items-center gap-[10px] rounded-[10px] cursor-pointer">
+            <button
+              onClick={() => hanldeAddCart()}
+              className="flex w-full h-[59px] text-[18px] text-white bg-[#FF4000] font-medium justify-center items-center gap-[10px] rounded-[10px] cursor-pointer"
+            >
               <img src="/ShoppingCart.svg" alt="shopping cart" />
               <span>Add to cart</span>
             </button>

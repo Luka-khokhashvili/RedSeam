@@ -1,5 +1,6 @@
 import type {
   Cart,
+  CartDeleteBody,
   CartPatchBody,
   CartPostBody,
   CheckoutRequestBody,
@@ -14,7 +15,7 @@ export const getCart = async (): Promise<Cart[]> => {
 };
 
 export const postCartProduct = async (
-  id: number,
+  id: number | undefined,
   body: CartPostBody
 ): Promise<Cart> => {
   const response = await api.post(`/cart/products/${id}`, body);
@@ -32,8 +33,8 @@ export const patchCartProduct = async (
   return response.data;
 };
 
-export const deleteCartProduct = async (id: number) => {
-  const response = await api.delete(`/cart/products/${id}`);
+export const deleteCartProduct = async (id: number, body: CartDeleteBody) => {
+  const response = await api.delete(`/cart/products/${id}`, { data: body });
 
   return response.data;
 };
