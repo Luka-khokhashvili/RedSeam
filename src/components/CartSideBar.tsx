@@ -136,7 +136,10 @@ function CartSideBar({ setShowCartBar }: CartSideBarProps) {
             </div>
           ) : (
             <>
-              <div className="flex-1 overflow-y-auto pr-2">
+              <div
+                className="flex-1 overflow-y-auto pr-2"
+                style={{ scrollbarColor: "#FF4000 transparent" }}
+              >
                 <div className="flex flex-col gap-[36px]">
                   {products.map((product, index) => (
                     <div

@@ -47,6 +47,7 @@ function Login() {
       console.log("User Login was successfully", data);
 
       localStorage.setItem("token", data.token);
+      localStorage.setItem("email", data.user.email);
 
       setErrors({});
 
