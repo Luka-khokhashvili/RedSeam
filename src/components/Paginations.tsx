@@ -6,11 +6,11 @@ interface PaginationProps {
   onPageChange: (page: number) => void;
 }
 
-const Pagination: React.FC<PaginationProps> = ({
+function Pagination({
   currentPage,
   totalPages,
   onPageChange,
-}) => {
+}: PaginationProps) {
   const [hoveredEllipsis, setHoveredEllipsis] = useState<number | null>(null);
 
   const visibleSet = useMemo(() => {
@@ -132,6 +132,6 @@ const Pagination: React.FC<PaginationProps> = ({
       </button>
     </div>
   );
-};
+}
 
 export default Pagination;
