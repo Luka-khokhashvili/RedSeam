@@ -1,15 +1,20 @@
 import { Link } from "react-router-dom";
-import type { Cart } from "../../interfaces/cart";
-import getImageForColor from "../../utils/getImageForColor";
-import handleQuantityChange from "../../utils/handleQuantityChange";
-import handleDelete from "../../utils/handleDelete";
+import type { Cart } from "../interfaces/cart";
+import getImageForColor from "../utils/getImageForColor";
+import handleQuantityChange from "../utils/handleQuantityChange";
+import handleDelete from "../utils/handleDelete";
 
 type CheckoutDetailsProps = {
   products: Cart[];
   setProducts: React.Dispatch<React.SetStateAction<Cart[]>>;
+  showPayButton?: boolean;
 };
 
-function CheckoutDetails({ products, setProducts }: CheckoutDetailsProps) {
+function CartDetails({
+  products,
+  setProducts,
+  showPayButton = false,
+}: CheckoutDetailsProps) {
   const calcSubtotal = (products: Cart[]) =>
     products.reduce(
       (sum, product) => sum + product.total_price * product.quantity,
@@ -127,20 +132,22 @@ function CheckoutDetails({ products, setProducts }: CheckoutDetailsProps) {
           </>
         )}
 
-        <div>
-          {products.length > 0 && (
-            <button
-              type="submit"
-              form="checkoutForm"
-              className="flex w-full justify-center items-center py-[16px] bg-[#FF4000] text-white rounded-[10px] cursor-pointer"
-            >
-              Pay
-            </button>
-          )}
-        </div>
+        {showPayButton && (
+          <div>
+            {products.length > 0 && (
+              <button
+                type="submit"
+                form="checkoutForm"
+                className="flex w-full justify-center items-center py-[16px] bg-[#FF4000] text-white rounded-[10px] cursor-pointer"
+              >
+                Pay
+              </button>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
 }
 
-export default CheckoutDetails;
+export default CartDetails;

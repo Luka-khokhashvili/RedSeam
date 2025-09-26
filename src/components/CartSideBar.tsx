@@ -2,20 +2,10 @@ import { useEffect, useState } from "react";
 import { getCart } from "../api/services/cartService";
 import type { Cart } from "../interfaces/cart";
 import { Link } from "react-router-dom";
-import handleQuantityChange from "../utils/handleQuantityChange";
-import getImageForColor from "../utils/getImageForColor";
-import handleDelete from "../utils/handleDelete";
+import CartDetails from "./CartDetails";
 type CartSideBarProps = {
   setShowCartBar: React.Dispatch<React.SetStateAction<boolean>>;
 };
-
-const calcSubtotal = (products: Cart[]) =>
-  products.reduce(
-    (sum, product) => sum + product.total_price * product.quantity,
-    0
-  );
-
-const delivery = 5;
 
 function CartSideBar({ setShowCartBar }: CartSideBarProps) {
   const [products, setProducts] = useState<Cart[]>([]);
@@ -23,9 +13,6 @@ function CartSideBar({ setShowCartBar }: CartSideBarProps) {
   useEffect(() => {
     getCart().then((res) => setProducts(res));
   }, []);
-
-  const subtotal = calcSubtotal(products);
-  const total = subtotal + delivery;
 
   return (
     <>
@@ -73,93 +60,7 @@ function CartSideBar({ setShowCartBar }: CartSideBarProps) {
               </button>
             </div>
           ) : (
-            <>
-              <div
-                className="flex-1 overflow-y-auto pr-2"
-                style={{ scrollbarColor: "#FF4000 transparent" }}
-              >
-                <div className="flex flex-col gap-[36px]">
-                  {products.map((product, index) => (
-                    <div
-                      key={index}
-                      className="flex w-full gap-[17px] h-[134px]"
-                    >
-                      <img
-                        className="w-[100px] border border-[#E1DFE1] rounded-[10px]"
-                        src={getImageForColor(product)}
-                        alt="Product cover"
-                      />
-                      <div className="flex w-full flex-col gap-[8px] py-[8.5px]">
-                        <p className="flex w-full justify-between items-center text-[#10151F] font-medium">
-                          <span className="text-[14px]">{product.name}</span>
-                          <span className="text-[18px]">
-                            $ {product.price * product.quantity}
-                          </span>
-                        </p>
-                        <p className="text-[12px] text-[#3E424A]">
-                          {product.color}
-                        </p>
-                        <p className="text-[12px] text-[#3E424A]">
-                          {product.size}
-                        </p>
-                        <div className="flex w-full justify-between items-center">
-                          <div className="flex gap-[9px] py-[4px] px-[10px] border border-[#E1DFE1] rounded-[22px]">
-                            <button
-                              onClick={() =>
-                                product.quantity > 1 &&
-                                handleQuantityChange(
-                                  product,
-                                  product.quantity - 1,
-                                  setProducts
-                                )
-                              }
-                              disabled={product.quantity <= 1}
-                              className="disabled:text-[#E1DFE1] disabled:cursor-not-allowed cursor-pointer"
-                            >
-                              -
-                            </button>
-                            <p className="cursor-default">{product.quantity}</p>
-                            <button
-                              onClick={() =>
-                                handleQuantityChange(
-                                  product,
-                                  product.quantity + 1,
-                                  setProducts
-                                )
-                              }
-                              className="cursor-pointer"
-                            >
-                              +
-                            </button>
-                          </div>
-                          <button
-                            onClick={() => handleDelete(product, setProducts)}
-                            className="text-[12px] text-[#3E424A] cursor-pointer"
-                          >
-                            Remove
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="flex flex-col gap-[16px] mt-4">
-                <p className="text-[16px] text-[#3E424A] flex w-full justify-between">
-                  <span>Items subtotal</span>
-                  <span>$ {subtotal}</span>
-                </p>
-                <p className="text-[16px] text-[#3E424A] flex w-full justify-between">
-                  <span>Delivery</span>
-                  <span>$ {delivery}</span>
-                </p>
-                <p className="text-[20px] text-[#10151F] font-medium flex w-full justify-between">
-                  <span>Total</span>
-                  <span>$ {total}</span>
-                </p>
-              </div>
-            </>
+            <CartDetails products={products} setProducts={setProducts} />
           )}
         </div>
 

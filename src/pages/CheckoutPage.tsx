@@ -5,7 +5,7 @@ import CheckoutSuccess from "../components/CheckoutSuccess";
 import { checkoutSchema } from "../schemas/checkoutSchema";
 import { validateForm } from "../utils/validateForm";
 import CheckoutForm from "../components/checkoutComponents/CheckoutForm";
-import CheckoutDetails from "../components/checkoutComponents/CheckoutDetails";
+import CartDetails from "../components/CartDetails";
 
 type checkoutFormBody = {
   name: string;
@@ -103,7 +103,11 @@ function CheckoutPage() {
           handleCheckout={handleCheckout}
         />
         {/* Details */}
-        <CheckoutDetails products={products} setProducts={setProducts} />
+        <CartDetails
+          products={products}
+          setProducts={setProducts}
+          showPayButton={true}
+        />
       </div>
     </div>
   );
