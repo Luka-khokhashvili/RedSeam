@@ -41,28 +41,7 @@ function CartSideBar({ setShowCartBar }: CartSideBarProps) {
 
         <div />
 
-        {/* Main content */}
-        <div className="min-h-0 flex flex-col">
-          {products.length <= 0 ? (
-            <div className="flex flex-col w-full pt-[150px] justify-center items-center">
-              <img src="/CartRed.svg" alt="Cart" />
-              <h2 className="text-[24px] text-[#10151F] font-semibold mt-[24px]">
-                Ooops!
-              </h2>
-              <p className="text-[14px] text-[#3E424A] mt-[10px]">
-                You’ve got nothing in your cart just yet...
-              </p>
-              <button
-                onClick={() => setShowCartBar(false)}
-                className="flex w-[214px] items-center justify-center text-[14px] text-white mt-[58px] py-[10px] bg-[#FF4000] rounded-[10px] cursor-pointer"
-              >
-                Start shopping
-              </button>
-            </div>
-          ) : (
-            <CartDetails products={products} setProducts={setProducts} />
-          )}
-        </div>
+        <CartDetails products={products} setProducts={setProducts} />
 
         <div />
 
