@@ -1,10 +1,6 @@
 import { useEffect, useState } from "react";
-import {
-  checkout,
-  deleteCartProduct,
-  getCart,
-} from "../api/services/cartService";
-import type { Cart, CartDeleteBody } from "../interfaces/cart";
+import { checkout, getCart } from "../api/services/cartService";
+import type { Cart } from "../interfaces/cart";
 import { Link } from "react-router-dom";
 import CheckoutSuccess from "../components/CheckoutSuccess";
 import handleQuantityChange from "../utils/handleQuantityChange";
@@ -12,6 +8,7 @@ import { checkoutSchema } from "../schemas/checkoutSchema";
 import { validateForm } from "../utils/validateForm";
 import handleChange from "../utils/handleChange";
 import getImageForColor from "../utils/getImageForColor";
+import handleDelete from "../utils/handleDelete";
 const calcSubtotal = (products: Cart[]) =>
   products.reduce(
     (sum, product) => sum + product.total_price * product.quantity,
@@ -100,30 +97,6 @@ function CheckoutPage() {
       } else {
         console.log("Unexpected error:", error);
       }
-    }
-  };
-
-  const handleDelete = async (product: Cart) => {
-    try {
-      const deleteBody: CartDeleteBody = {
-        color: product.color,
-        size: product.size,
-      };
-
-      await deleteCartProduct(product.id, deleteBody);
-
-      setProducts((prev) =>
-        prev.filter(
-          (p) =>
-            !(
-              p.id === product.id &&
-              p.color === product.color &&
-              p.size === product.size
-            )
-        )
-      );
-    } catch (error) {
-      console.error("Failed to remove product:", error);
     }
   };
 
@@ -370,7 +343,7 @@ function CheckoutPage() {
                               </button>
                             </div>
                             <button
-                              onClick={() => handleDelete(product)}
+                              onClick={() => handleDelete(product, setProducts)}
                               className="text-[12px] text-[#3E424A] cursor-pointer"
                             >
                               Remove

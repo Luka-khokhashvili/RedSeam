@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { deleteCartProduct, getCart } from "../api/services/cartService";
-import type { Cart, CartDeleteBody } from "../interfaces/cart";
+import { getCart } from "../api/services/cartService";
+import type { Cart } from "../interfaces/cart";
 import { Link } from "react-router-dom";
 import handleQuantityChange from "../utils/handleQuantityChange";
 import getImageForColor from "../utils/getImageForColor";
+import handleDelete from "../utils/handleDelete";
 type CartSideBarProps = {
   setShowCartBar: React.Dispatch<React.SetStateAction<boolean>>;
 };
@@ -22,30 +23,6 @@ function CartSideBar({ setShowCartBar }: CartSideBarProps) {
   useEffect(() => {
     getCart().then((res) => setProducts(res));
   }, []);
-
-  const handleDelete = async (product: Cart) => {
-    try {
-      const deleteBody: CartDeleteBody = {
-        color: product.color,
-        size: product.size,
-      };
-
-      await deleteCartProduct(product.id, deleteBody);
-
-      setProducts((prev) =>
-        prev.filter(
-          (p) =>
-            !(
-              p.id === product.id &&
-              p.color === product.color &&
-              p.size === product.size
-            )
-        )
-      );
-    } catch (error) {
-      console.error("Failed to remove product:", error);
-    }
-  };
 
   const subtotal = calcSubtotal(products);
   const total = subtotal + delivery;
@@ -156,7 +133,7 @@ function CartSideBar({ setShowCartBar }: CartSideBarProps) {
                             </button>
                           </div>
                           <button
-                            onClick={() => handleDelete(product)}
+                            onClick={() => handleDelete(product, setProducts)}
                             className="text-[12px] text-[#3E424A] cursor-pointer"
                           >
                             Remove
