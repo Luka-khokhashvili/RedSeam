@@ -12,10 +12,15 @@ export const handleFileChange = (
 
 export const handleRemove = (
   avatar: File | null,
-  setAvatar: React.Dispatch<React.SetStateAction<File | null>>
+  setAvatar: React.Dispatch<React.SetStateAction<File | null>>,
+  fileInputRef?: React.RefObject<HTMLInputElement | null>
 ) => {
   if (avatar) {
     setAvatar(null);
+  }
+
+  if (fileInputRef?.current) {
+    fileInputRef.current.value = "";
   }
 };
 
