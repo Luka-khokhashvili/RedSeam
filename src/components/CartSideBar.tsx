@@ -3,6 +3,7 @@ import { deleteCartProduct, getCart } from "../api/services/cartService";
 import type { Cart, CartDeleteBody } from "../interfaces/cart";
 import { Link } from "react-router-dom";
 import handleQuantityChange from "../utils/handleQuantityChange";
+import getImageForColor from "../utils/getImageForColor";
 type CartSideBarProps = {
   setShowCartBar: React.Dispatch<React.SetStateAction<boolean>>;
 };
@@ -21,14 +22,6 @@ function CartSideBar({ setShowCartBar }: CartSideBarProps) {
   useEffect(() => {
     getCart().then((res) => setProducts(res));
   }, []);
-
-  const getImageForColor = (product: Cart) => {
-    if (!product.images || !product?.available_colors)
-      return product.cover_image;
-
-    const colorIndex = product.available_colors.indexOf(product.color);
-    return product.images[colorIndex] || product.cover_image;
-  };
 
   const handleDelete = async (product: Cart) => {
     try {
