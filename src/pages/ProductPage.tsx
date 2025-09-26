@@ -103,7 +103,7 @@ function ProductPage() {
           {/* main image */}
           <img
             className="w-[603px] lg:w-[703px] h-[937px] rounded-[10px]"
-            src={mainImage}
+            src={mainImage || product?.cover_image}
             alt={product?.name}
           />
         </div>
@@ -123,8 +123,9 @@ function ProductPage() {
             <div className="flex flex-col gap-[16px]">
               <p className="text-[16px] text-[#10151F]">Color: {currColor}</p>
               <div className="flex gap-[8px]">
-                {product?.available_colors?.map((color) => (
+                {product?.available_colors?.map((color, i) => (
                   <div
+                    key={i}
                     className={`w-[48px] aspect-square p-[4px] border rounded-[50%] cursor-pointer ${
                       color === currColor
                         ? "border border-[#E1DFE1]"
@@ -147,8 +148,9 @@ function ProductPage() {
               <p className="text-[16px] text-[#10151F]">Size: {currSize}</p>
               <div className="flex gap-[8px]">
                 {product?.available_sizes ? (
-                  product?.available_sizes.map((size) => (
+                  product?.available_sizes.map((size, i) => (
                     <button
+                      key={i}
                       className={`flex w-[70px] h-[42px] justify-center items-center border rounded-[10px] cursor-pointer ${
                         currSize === size
                           ? "border-[#10151F] bg-[#F8F6F7]"
