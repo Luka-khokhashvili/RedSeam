@@ -1,7 +1,7 @@
 import { useState } from "react";
 import EllipsisTooltip from "./EllipsisTooltip";
 import getHiddenPages from "../../utils/getHiddenPages";
-import useBuildPagesArray from "../../utils/buildPagesArray";
+import useBuildPagesArray from "../../hooks/buildPagesArray";
 
 interface PaginationProps {
   currentPage: number;
