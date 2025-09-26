@@ -11,6 +11,7 @@ import handleQuantityChange from "../utils/handleQuantityChange";
 import { checkoutSchema } from "../schemas/checkoutSchema";
 import { validateForm } from "../utils/validateForm";
 import handleChange from "../utils/handleChange";
+import getImageForColor from "../utils/getImageForColor";
 const calcSubtotal = (products: Cart[]) =>
   products.reduce(
     (sum, product) => sum + product.total_price * product.quantity,
@@ -100,14 +101,6 @@ function CheckoutPage() {
         console.log("Unexpected error:", error);
       }
     }
-  };
-
-  const getImageForColor = (product: Cart) => {
-    if (!product.images || !product?.available_colors)
-      return product.cover_image;
-
-    const colorIndex = product.available_colors.indexOf(product.color);
-    return product.images[colorIndex] || product.cover_image;
   };
 
   const handleDelete = async (product: Cart) => {
