@@ -17,8 +17,8 @@ type ListingHeaderProps = {
   filters: Filters;
   setFilters: (filters: Filters) => void;
   setSort: (sortKey: string) => void;
-  filterRef: React.RefObject<HTMLDivElement>;
-  sortRef: React.RefObject<HTMLDivElement>;
+  filterRef: React.RefObject<HTMLDivElement | null>;
+  sortRef: React.RefObject<HTMLDivElement | null>;
   filterOpen: boolean;
   sortOpen: boolean;
   openFilterBox: () => void;
