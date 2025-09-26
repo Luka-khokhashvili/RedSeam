@@ -1,11 +1,6 @@
-import { useRef } from "react";
 import type { RegisterBody } from "../../interfaces/auth";
 import handleChange from "../../utils/handleChange";
-import {
-  handleFileChange,
-  handleFileInput,
-  handleRemove,
-} from "../../utils/handleFile";
+import AvatarSection from "./AvatarSection";
 
 interface RegisterFormProps {
   formBody: RegisterBody;
@@ -41,58 +36,15 @@ function RegistrationFrom({
   avatarPreview,
   setAvatarPreview,
 }: RegisterFormProps) {
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
-
   return (
     <form onSubmit={handleSubmit} className="flex w-full flex-col">
-      <div>
-        {avatar ? (
-          <div className="flex items-center gap-[15px] pb-[46px]">
-            <img
-              src={avatarPreview}
-              alt="Avatar preview"
-              className="w-[100px] aspect-square object-cover rounded-[50%]"
-            />
-            <button
-              type="button"
-              onClick={() => handleFileInput(fileInputRef)}
-              className="text-[14px] text-[#3E424A] cursor-pointer"
-            >
-              Upload new
-            </button>
-            <button
-              type="button"
-              onClick={() => handleRemove(avatar, setAvatar)}
-              className="text-[14px] text-[#3E424A] cursor-pointer"
-            >
-              Remove
-            </button>
-          </div>
-        ) : (
-          <div className="flex items-center gap-[15px] pb-[46px]">
-            <img
-              src="./Camera.svg"
-              alt="Camera"
-              onClick={() => handleFileInput(fileInputRef)}
-              className="p-[40px] rounded-[50%] border border-[#E1DFE1] cursor-pointer"
-            />
-            <button
-              type="button"
-              onClick={() => handleFileInput(fileInputRef)}
-              className="text-[14px] text-[#3E424A] cursor-pointer"
-            >
-              Upload image
-            </button>
-          </div>
-        )}
-        <input
-          type="file"
-          ref={fileInputRef}
-          accept="image/*"
-          onChange={(e) => handleFileChange(e, setAvatar, setAvatarPreview)}
-          className="hidden"
-        />
-      </div>
+      <AvatarSection
+        avatar={avatar}
+        setAvatar={setAvatar}
+        avatarPreview={avatarPreview}
+        setAvatarPreview={setAvatarPreview}
+      />
+
       {/* Main form */}
       <div className="flex flex-col gap-[24px]">
         <div className="w-full">
