@@ -1,11 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useProducts } from "../api/hooks/useProducts";
-import type { Product } from "../interfaces/product";
 import Pagination from "../components/Paginations";
-import FilterBox from "../components/FilterBox";
-import SortBox from "../components/SortBox";
-import { Link } from "react-router-dom";
 import { useListing } from "../context/ListingContext";
+import ListingHeader from "../components/ListingPageComponents/ListingHeader";
+import ProductListing from "../components/ListingPageComponents/ProductListing";
 
 function ListingPage() {
   const { page, setPage, filters, setFilters, sort, setSort } = useListing();
@@ -67,93 +65,20 @@ function ListingPage() {
   return (
     <section className="flex flex-col px-[100px] mt-[72px]">
       {/* Header */}
-      <div className="flex w-full flex-col gap-[19px]">
-        <div className="w-full flex justify-between items-center">
-          <h1 className="text-[42px] font-semibold">Products</h1>
-          <div className="relative flex items-center gap-[32px]">
-            <p className="text-[12px] text-[#3E424A]">
-              Showing {meta?.from}-{meta?.to} of {meta?.total} results
-            </p>
-            <div className="h-[14px] border border-[#E1DFE1]"></div>
-            <div className="relative" ref={filterRef}>
-              <button
-                onClick={openFilterBox}
-                className="flex items-center text-[16px] gap-[10px] cursor-pointer"
-              >
-                <img
-                  className="h-[15px]"
-                  src="./Filter.svg"
-                  alt="Filters icon"
-                />
-                Filter
-              </button>
-              {filterOpen && <FilterBox setFilters={setFilters} />}
-            </div>
-
-            <div className="relative" ref={sortRef}>
-              <button
-                onClick={openSort}
-                className="flex items-center text-[16px] gap-[9px] cursor-pointer"
-              >
-                Sort by
-                <img
-                  className={`w-[10px] ${
-                    sortOpen && "-rotate-180"
-                  } transition duration-100`}
-                  src="Arrow.svg"
-                  alt="Arrow icon"
-                />
-              </button>
-              {sortOpen && (
-                <SortBox
-                  setSort={(sortKey: string) => () => setSort(sortKey)}
-                />
-              )}
-            </div>
-          </div>
-        </div>
-        {filters.priceFrom && filters.priceTo && (
-          <div className="flex w-[141px] h-[37px] justify-center items-center border border-[#E1DFE1] rounded-[50px]">
-            <p className="flex gap-[8.62px] text-[14px] text-[#3E424A]">
-              <span>
-                Price: {filters.priceFrom}-{filters.priceTo}
-              </span>
-              <button
-                onClick={() =>
-                  setFilters({ priceFrom: undefined, priceTo: undefined })
-                }
-                className="cursor-pointer"
-              >
-                <img
-                  className="w-[6.75px] aspect-square"
-                  src="/x.svg"
-                  alt="clear"
-                />
-              </button>
-            </p>
-          </div>
-        )}
-      </div>
+      <ListingHeader
+        meta={meta}
+        filters={filters}
+        setFilters={setFilters}
+        setSort={setSort}
+        filterRef={filterRef}
+        sortRef={sortRef}
+        filterOpen={filterOpen}
+        sortOpen={sortOpen}
+        openFilterBox={openFilterBox}
+        openSort={openSort}
+      />
       {/* Products Listing */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-[24px] gap-y-[48px] mt-[32px]">
-        {products.map((product: Product) => (
-          <Link
-            to={`/product/${product.id}`}
-            key={product.id}
-            className="flex flex-col w-[206px] lg:w-[412px] gap-[12px] hover:scale-105 transition duration-300"
-          >
-            <img src={product.cover_image} alt={product.name} />
-            <div>
-              <h3 className="text-[13px] lg:text-18px text-[#10151F] font-medium">
-                {product.name}
-              </h3>
-              <p className="text-[16px] text-[#10151F] font-medium">
-                $ {product.price}
-              </p>
-            </div>
-          </Link>
-        ))}
-      </div>
+      <ProductListing products={products} />
 
       {totalPages >= 1 && (
         <Pagination
