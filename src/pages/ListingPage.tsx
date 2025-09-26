@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useProducts } from "../api/hooks/useProducts";
-import Pagination from "../components/Paginations";
+import Pagination from "../components/pagination/Paginations";
 import { useListing } from "../context/ListingContext";
 import ListingHeader from "../components/ListingPageComponents/ListingHeader";
 import ProductListing from "../components/ListingPageComponents/ProductListing";
