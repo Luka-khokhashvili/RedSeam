@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { loginUser } from "../api/services/loginUser";
 import { useAuth } from "../context/AuthContext";
+import { validateForm } from "../utils/validateForm";
+import { loginSchema } from "../schemas/authSchema";
 
 function Login() {
   const navigate = useNavigate();
@@ -21,26 +23,13 @@ function Login() {
 
   const { login } = useAuth();
 
-  const validateForm = () => {
-    const newErrors: typeof errors = {};
-
-    if (!formBody.email) newErrors.email = "Email is required";
-    else if (!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(formBody.email))
-      newErrors.email = "Invalid email format";
-
-    if (!formBody.password) newErrors.password = "Password is required";
-    else if (formBody.password.length < 3)
-      newErrors.password = "Password must be at least 3 characters";
-
-    setErrors(newErrors);
-
-    return Object.keys(newErrors).length === 0;
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!validateForm()) return;
+    const { isValid, validationErrors } = validateForm(formBody, loginSchema);
+    setErrors(validationErrors);
+
+    if (!isValid) return;
 
     try {
       const data = await loginUser({ ...formBody });

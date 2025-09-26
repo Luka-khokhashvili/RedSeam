@@ -1,6 +1,8 @@
 import React, { useRef, useState } from "react";
 import { registerUser } from "../api/services/registerUser";
 import { useNavigate } from "react-router-dom";
+import { validateForm } from "../utils/validateForm";
+import { registerSchema } from "../schemas/authSchema";
 
 function Register() {
   const navigate = useNavigate();
@@ -31,35 +33,16 @@ function Register() {
   );
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const validateForm = () => {
-    const newErrors: typeof errors = {};
-
-    if (!formBody.username) newErrors.username = "Username is required";
-    else if (formBody.username.length < 3)
-      newErrors.username = "Username must be at least 3 characters";
-
-    if (!formBody.email) newErrors.email = "Email is required";
-    else if (!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(formBody.email))
-      newErrors.email = "Invalid email format";
-
-    if (!formBody.password) newErrors.password = "Password is required";
-    else if (formBody.password.length < 3)
-      newErrors.password = "Password must be at least 3 characters";
-
-    if (!formBody.password_confirmation)
-      newErrors.password_confirmation = "Confirm password is required";
-    else if (formBody.password_confirmation !== formBody.password)
-      newErrors.password_confirmation = "Passwords do not match";
-
-    setErrors(newErrors);
-
-    return Object.keys(newErrors).length === 0;
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!validateForm()) return;
+    const { isValid, validationErrors } = validateForm(
+      formBody,
+      registerSchema
+    );
+    setErrors(validationErrors);
+
+    if (!isValid) return;
 
     try {
       const data = await registerUser({

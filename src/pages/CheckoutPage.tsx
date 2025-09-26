@@ -8,6 +8,8 @@ import type { Cart, CartDeleteBody } from "../interfaces/cart";
 import { Link } from "react-router-dom";
 import CheckoutSuccess from "../components/CheckoutSuccess";
 import handleQuantityChange from "../utils/handleQuantityChange";
+import { checkoutSchema } from "../schemas/checkoutSchema";
+import { validateForm } from "../utils/validateForm";
 const calcSubtotal = (products: Cart[]) =>
   products.reduce(
     (sum, product) => sum + product.total_price * product.quantity,
@@ -47,30 +49,16 @@ function CheckoutPage() {
     setFormBody((prev) => ({ ...prev, email: email ?? "" }));
   }, [email]);
 
-  const validateForm = () => {
-    const newErrors: typeof errors = {};
-
-    if (!formBody.name) newErrors.name = "Name is required";
-    else if (formBody.name.length < 3)
-      newErrors.name = "Name must be at least 3 characters";
-    if (!formBody.surname) newErrors.surname = "Surname is required";
-    else if (formBody.surname.length < 3)
-      newErrors.surname = "Surname must be at least 3 characters";
-
-    if (!formBody.email) newErrors.email = "Email is required";
-    else if (!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(formBody.email))
-      newErrors.email = "Invalid email format";
-
-    if (!formBody.address) newErrors.address = "Address is required";
-    if (!formBody.zip_code) newErrors.zip_code = "Zip_code is required";
-
-    return Object.keys(newErrors).length === 0;
-  };
-
   const handleCheckout = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!validateForm()) return;
+    const { isValid, validationErrors } = validateForm(
+      formBody,
+      checkoutSchema
+    );
+    setErrors(validationErrors);
+
+    if (!isValid) return;
 
     try {
       const data = await checkout({ ...formBody });
