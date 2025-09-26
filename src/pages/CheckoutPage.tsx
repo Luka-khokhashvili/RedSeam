@@ -3,11 +3,11 @@ import {
   checkout,
   deleteCartProduct,
   getCart,
-  patchCartProduct,
 } from "../api/services/cartService";
-import type { Cart, CartDeleteBody, CartPatchBody } from "../interfaces/cart";
+import type { Cart, CartDeleteBody } from "../interfaces/cart";
 import { Link } from "react-router-dom";
 import CheckoutSuccess from "../components/CheckoutSuccess";
+import handleQuantityChange from "../utils/handleQuantityChange";
 const calcSubtotal = (products: Cart[]) =>
   products.reduce(
     (sum, product) => sum + product.total_price * product.quantity,
@@ -108,35 +108,6 @@ function CheckoutPage() {
       } else {
         console.log("Unexpected error:", error);
       }
-    }
-  };
-
-  const handleQuantityChange = async (product: Cart, newQuantity: number) => {
-    try {
-      const patchBody: CartPatchBody = {
-        quantity: newQuantity,
-        color: product.color,
-        size: product.size,
-      };
-
-      setProducts((prev) =>
-        prev.map((p) =>
-          p.id === product.id &&
-          p.color === product.color &&
-          p.size === product.size
-            ? { ...p, quantity: newQuantity }
-            : p
-        )
-      );
-
-      await patchCartProduct(product.id, patchBody);
-    } catch (error) {
-      console.error("Failed to update quantity:", error);
-      setProducts((prev) =>
-        prev.map((p) =>
-          p.id === product.id ? { ...p, quantity: product.quantity } : p
-        )
-      );
     }
   };
 
@@ -383,7 +354,8 @@ function CheckoutPage() {
                                   product.quantity > 1 &&
                                   handleQuantityChange(
                                     product,
-                                    product.quantity - 1
+                                    product.quantity - 1,
+                                    setProducts
                                   )
                                 }
                                 disabled={product.quantity <= 1}
@@ -398,7 +370,8 @@ function CheckoutPage() {
                                 onClick={() =>
                                   handleQuantityChange(
                                     product,
-                                    product.quantity + 1
+                                    product.quantity + 1,
+                                    setProducts
                                   )
                                 }
                                 className="cursor-pointer"
