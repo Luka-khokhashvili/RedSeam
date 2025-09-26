@@ -4,13 +4,16 @@ import { loginUser } from "../api/services/loginUser";
 import { useAuth } from "../context/AuthContext";
 import { validateForm } from "../utils/validateForm";
 import { loginSchema } from "../schemas/authSchema";
+import handleChange from "../utils/handleChange";
+
+type loginFormBody = {
+  email: string;
+  password: string;
+};
 
 function Login() {
   const navigate = useNavigate();
-  const [formBody, setFormBody] = useState<{
-    email: string;
-    password: string;
-  }>({
+  const [formBody, setFormBody] = useState<loginFormBody>({
     email: "",
     password: "",
   });
@@ -63,10 +66,6 @@ function Login() {
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormBody({ ...formBody, [e.target.name]: e.target.value });
-  };
-
   return (
     <div className="flex h-[calc(100vh-80px)]">
       <img src="./Banner.png" alt="Auth Banner" className="w-[948px]" />
@@ -83,7 +82,9 @@ function Login() {
                     type="email"
                     name="email"
                     value={formBody.email}
-                    onChange={handleChange}
+                    onChange={(e) => {
+                      handleChange(e, formBody, setFormBody);
+                    }}
                     className={`w-full px-[12px] py-[10.5px] border ${
                       errors.email ? "border-[#FF4000]" : "border-[#E1DFE1]"
                     } focus:border-[#10151F] rounded peer focus:outline-none placeholder-transparent`}
@@ -107,7 +108,9 @@ function Login() {
                     type={showPassword ? "text" : "password"}
                     name="password"
                     value={formBody.password}
-                    onChange={handleChange}
+                    onChange={(e) => {
+                      handleChange(e, formBody, setFormBody);
+                    }}
                     className={`w-full px-[12px] py-[10.5px] border ${
                       errors.password ? "border-[#FF4000]" : "border-[#E1DFE1]"
                     } focus:border-[#10151F] rounded peer focus:outline-none placeholder-transparent`}

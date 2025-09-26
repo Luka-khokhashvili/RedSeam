@@ -3,15 +3,18 @@ import { registerUser } from "../api/services/registerUser";
 import { useNavigate } from "react-router-dom";
 import { validateForm } from "../utils/validateForm";
 import { registerSchema } from "../schemas/authSchema";
+import handleChange from "../utils/handleChange";
+
+type registerFormBody = {
+  email: string;
+  password: string;
+  password_confirmation: string;
+  username: string;
+};
 
 function Register() {
   const navigate = useNavigate();
-  const [formBody, setFormBody] = useState<{
-    email: string;
-    password: string;
-    password_confirmation: string;
-    username: string;
-  }>({
+  const [formBody, setFormBody] = useState<registerFormBody>({
     email: "",
     password: "",
     password_confirmation: "",
@@ -76,10 +79,6 @@ function Register() {
         console.log("Unexpected error:", error);
       }
     }
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormBody({ ...formBody, [e.target.name]: e.target.value });
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -167,7 +166,7 @@ function Register() {
                     type="text"
                     name="username"
                     value={formBody.username}
-                    onChange={handleChange}
+                    onChange={(e) => handleChange(e, formBody, setFormBody)}
                     className={`w-full px-[12px] py-[10.5px] border ${
                       errors.username ? "border-[#FF4000]" : "border-[#E1DFE1]"
                     } focus:border-[#10151F] rounded peer focus:outline-none placeholder-transparent`}
@@ -191,7 +190,7 @@ function Register() {
                     type="email"
                     name="email"
                     value={formBody.email}
-                    onChange={handleChange}
+                    onChange={(e) => handleChange(e, formBody, setFormBody)}
                     className={`w-full px-[12px] py-[10.5px] border ${
                       errors.email ? "border-[#FF4000]" : "border-[#E1DFE1]"
                     } focus:border-[#10151F] rounded peer focus:outline-none placeholder-transparent`}
@@ -215,7 +214,7 @@ function Register() {
                     type={showPassword ? "text" : "password"}
                     name="password"
                     value={formBody.password}
-                    onChange={handleChange}
+                    onChange={(e) => handleChange(e, formBody, setFormBody)}
                     className={`w-full px-[12px] py-[10.5px] border ${
                       errors.password ? "border-[#FF4000]" : "border-[#E1DFE1]"
                     } focus:border-[#10151F] rounded peer focus:outline-none placeholder-transparent`}
@@ -247,7 +246,7 @@ function Register() {
                     type={showPasswordConfirm ? "text" : "password"}
                     name="password_confirmation"
                     value={formBody.password_confirmation}
-                    onChange={handleChange}
+                    onChange={(e) => handleChange(e, formBody, setFormBody)}
                     className={`w-full px-[12px] py-[10.5px] border ${
                       errors.password_confirmation
                         ? "border-[#FF4000]"

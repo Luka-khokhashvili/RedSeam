@@ -10,6 +10,7 @@ import CheckoutSuccess from "../components/CheckoutSuccess";
 import handleQuantityChange from "../utils/handleQuantityChange";
 import { checkoutSchema } from "../schemas/checkoutSchema";
 import { validateForm } from "../utils/validateForm";
+import handleChange from "../utils/handleChange";
 const calcSubtotal = (products: Cart[]) =>
   products.reduce(
     (sum, product) => sum + product.total_price * product.quantity,
@@ -18,17 +19,19 @@ const calcSubtotal = (products: Cart[]) =>
 
 const delivery = 5;
 
+type checkoutFormBody = {
+  name: string;
+  surname: string;
+  email: string;
+  address: string;
+  zip_code: string;
+};
+
 function CheckoutPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [products, setProducts] = useState<Cart[]>([]);
   const email = localStorage.getItem("email");
-  const [formBody, setFormBody] = useState<{
-    name: string;
-    surname: string;
-    email: string;
-    address: string;
-    zip_code: string;
-  }>({
+  const [formBody, setFormBody] = useState<checkoutFormBody>({
     name: "",
     surname: "",
     email: "",
@@ -134,10 +137,6 @@ function CheckoutPage() {
   const subtotal = calcSubtotal(products);
   const total = subtotal + delivery;
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormBody({ ...formBody, [e.target.name]: e.target.value });
-  };
-
   return (
     <div className="flex flex-col w-full mt-[72px] gap-[42px] px-[100px]">
       {modalOpen && <CheckoutSuccess setModalOpen={setModalOpen} />}
@@ -161,7 +160,9 @@ function CheckoutPage() {
                       type="text"
                       name="name"
                       value={formBody.name}
-                      onChange={handleChange}
+                      onChange={(e) => {
+                        handleChange(e, formBody, setFormBody);
+                      }}
                       className={`w-full px-[12px] py-[10.5px] bg-white border ${
                         errors.name ? "border-[#FF4000]" : "border-[#E1DFE1]"
                       } focus:border-[#10151F] rounded-[8px] peer focus:outline-none placeholder-transparent`}
@@ -185,7 +186,9 @@ function CheckoutPage() {
                       type="text"
                       name="surname"
                       value={formBody.surname}
-                      onChange={handleChange}
+                      onChange={(e) => {
+                        handleChange(e, formBody, setFormBody);
+                      }}
                       className={`w-full px-[12px] py-[10.5px] bg-white border ${
                         errors.surname ? "border-[#FF4000]" : "border-[#E1DFE1]"
                       } focus:border-[#10151F] rounded-[8px] peer focus:outline-none placeholder-transparent`}
@@ -210,7 +213,9 @@ function CheckoutPage() {
                     type="email"
                     name="email"
                     value={formBody.email}
-                    onChange={handleChange}
+                    onChange={(e) => {
+                      handleChange(e, formBody, setFormBody);
+                    }}
                     className={`w-full px-[12px] py-[10.5px] bg-white border ${
                       errors.email ? "border-[#FF4000]" : "border-[#E1DFE1]"
                     } focus:border-[#10151F] rounded-[8px] peer focus:outline-none placeholder-transparent`}
@@ -238,7 +243,9 @@ function CheckoutPage() {
                       type="text"
                       name="address"
                       value={formBody.address}
-                      onChange={handleChange}
+                      onChange={(e) => {
+                        handleChange(e, formBody, setFormBody);
+                      }}
                       className={`w-full px-[12px] py-[10.5px] bg-white border ${
                         errors.address ? "border-[#FF4000]" : "border-[#E1DFE1]"
                       } focus:border-[#10151F] rounded-[8px] peer focus:outline-none placeholder-transparent`}
@@ -262,7 +269,9 @@ function CheckoutPage() {
                       type="text"
                       name="zip_code"
                       value={formBody.zip_code}
-                      onChange={handleChange}
+                      onChange={(e) => {
+                        handleChange(e, formBody, setFormBody);
+                      }}
                       className={`w-full px-[12px] py-[10.5px] bg-white border ${
                         errors.zip_code
                           ? "border-[#FF4000]"
