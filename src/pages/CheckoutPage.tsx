@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { checkout, getCart } from "../api/services/cartService";
 import type { Cart } from "../interfaces/cart";
-import CheckoutSuccess from "../components/CheckoutSuccess";
+import CheckoutSuccess from "../components/checkout/CheckoutSuccess";
 import { checkoutSchema } from "../schemas/checkoutSchema";
 import { validateForm } from "../utils/validateForm";
-import CheckoutForm from "../components/checkoutComponents/CheckoutForm";
+import CheckoutForm from "../components/checkout/CheckoutForm";
 import CartDetails from "../components/CartDetails";
 
 type checkoutFormBody = {

@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { loginUser } from "../api/services/loginUser";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../contexts/AuthContext";
 import { validateForm } from "../utils/validateForm";
 import { loginSchema } from "../schemas/authSchema";
-import LoginForm from "../components/LoginComponents/LoginForm";
+import LoginForm from "../components/login/LoginForm";
 
 type loginFormBody = {
   email: string;

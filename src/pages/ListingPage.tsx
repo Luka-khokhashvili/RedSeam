@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useProducts } from "../api/hooks/useProducts";
 import Pagination from "../components/pagination/Paginations";
-import { useListing } from "../context/ListingContext";
-import ListingHeader from "../components/ListingPageComponents/ListingHeader";
-import ProductListing from "../components/ListingPageComponents/ProductListing";
+import { useListing } from "../contexts/ListingContext";
+import ListingHeader from "../components/listingPage/ListingHeader";
+import ProductListing from "../components/listingPage/ProductListing";
 
 function ListingPage() {
   const { page, setPage, filters, setFilters, sort, setSort } = useListing();

@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getProductsById } from "../api/services/productService";
 import type { Product } from "../interfaces/product";
-import ImagesSection from "../components/productPageComponents/ImagesSection";
-import DetailsSection from "../components/productPageComponents/DetailsSection";
+import ImagesSection from "../components/productPage/ImagesSection";
+import DetailsSection from "../components/productPage/DetailsSection";
 
 function ProductPage() {
   const { id } = useParams();

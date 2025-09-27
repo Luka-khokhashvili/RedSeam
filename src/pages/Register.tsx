@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { validateForm } from "../utils/validateForm";
 import { registerSchema } from "../schemas/authSchema";
 import type { RegisterBody } from "../interfaces/auth";
-import RegistrationFrom from "../components/registrationComponents/RegistrationFrom";
+import RegistrationFrom from "../components/registration/RegistrationFrom";
 
 function Register() {
   const navigate = useNavigate();
