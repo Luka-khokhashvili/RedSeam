@@ -51,10 +51,22 @@ function ListingHeader({
               onClick={openFilterBox}
               className="flex items-center text-[16px] gap-[10px] cursor-pointer"
             >
-              <img className="h-[15px]" src="./Filter.svg" alt="Filters icon" />
+              <img
+                className={`h-[15px] transition-transform duration-50 ease-in-out transform ${
+                  filterOpen && "scale-x-[-1]"
+                }`}
+                src="./Filter.svg"
+                alt="Filters icon"
+              />
               Filter
             </button>
-            {filterOpen && <FilterBox setFilters={setFilters} />}
+            {filterOpen && (
+              <FilterBox
+                filters={filters}
+                setFilters={setFilters}
+                openFilterBox={openFilterBox}
+              />
+            )}
           </div>
 
           <div className="relative" ref={sortRef}>
@@ -84,9 +96,9 @@ function ListingHeader({
               Price: {filters.priceFrom}-{filters.priceTo}
             </span>
             <button
-              onClick={() =>
-                setFilters({ priceFrom: undefined, priceTo: undefined })
-              }
+              onClick={() => {
+                setFilters({ priceFrom: undefined, priceTo: undefined });
+              }}
               className="cursor-pointer"
             >
               <img

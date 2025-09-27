@@ -1,21 +1,32 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type FilterBoxProps = {
+  filters: {
+    priceFrom: number | undefined;
+    priceTo: number | undefined;
+  };
   setFilters: (filters: {
     priceFrom: number | undefined;
     priceTo: number | undefined;
   }) => void;
+  openFilterBox: () => void;
 };
 
-function FilterBox({ setFilters }: FilterBoxProps) {
+function FilterBox({ filters, setFilters, openFilterBox }: FilterBoxProps) {
   const [priceFrom, setPriceFrom] = useState<string>("");
   const [priceTo, setPriceTo] = useState<string>("");
+
+  useEffect(() => {
+    setPriceFrom(filters.priceFrom?.toString() ?? "");
+    setPriceTo(filters.priceTo?.toString() ?? "");
+  }, [filters]);
 
   const handleFilterSelection = () => {
     setFilters({
       priceFrom: priceFrom ? Number(priceFrom) : undefined,
       priceTo: priceTo ? Number(priceTo) : undefined,
     });
+    openFilterBox();
   };
 
   return (
