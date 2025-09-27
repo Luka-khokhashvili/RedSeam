@@ -26,6 +26,14 @@ function SortBox({ setSort }: SortBoxProps) {
           Price, high to low
         </li>
       </ul>
+      <div className="flex justify-end">
+        <button
+          onClick={setSort("")}
+          className="w-[60%] text-[14px] text-white bg-[#ff4000] hover:bg-[#FF1000] px-[42px] py-[10px] rounded-[10px] cursor-pointer transition duration-300"
+        >
+          Clear
+        </button>
+      </div>
     </div>
   );
 }
