@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import type { Product } from "../../interfaces/product";
 import getColorStyle from "../../utils/getColorStyle";
 import handleAddCart from "../../utils/handleAddCart";
@@ -22,6 +23,15 @@ function DetailsSection({
   currSize,
   setCurrSize,
 }: DetailsSectionProps) {
+  const navigate = useNavigate();
+  const token = localStorage.getItem("token");
+  const isLoggedIn = () => {
+    if (token && token !== null) {
+      return true;
+    }
+    return false;
+  };
+
   return (
     <div className="flex w-[704px] flex-col gap-[56px]">
       <div className="flex flex-col gap-[21px]">
@@ -100,14 +110,18 @@ function DetailsSection({
         </div>
         {/* Checkout button */}
         <button
-          onClick={() =>
-            handleAddCart({
-              product,
-              currQuantity,
-              currColor,
-              currSize,
-            })
-          }
+          onClick={() => {
+            if (isLoggedIn()) {
+              handleAddCart({
+                product,
+                currQuantity,
+                currColor,
+                currSize,
+              });
+            } else {
+              navigate("/login");
+            }
+          }}
           className="flex w-full h-[59px] text-[18px] text-white bg-[#FF4000] font-medium justify-center items-center gap-[10px] rounded-[10px] cursor-pointer"
         >
           <img src="/ShoppingCart.svg" alt="shopping cart" />
